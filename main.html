@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>벽돌깨기 | PA#2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="menu.js"></script>
+</head>
+<body>
+<div id="container">
+    <section id="main-menu">
+        <header>
+            <h1>벽돌깨기</h1>
+            <h2>웹프로그래밍(3162) PA#2</h2>
+        </header>
+        <div id="menu">
+            <button class="menu-btn">스토리 모드</button>
+            <button class="menu-btn">무한 모드</button>
+            <button class="menu-btn" onclick="openSettings()">환경설정</button>
+            <button class="menu-btn" onclick="openCredit()">정보</button>
+        </div>
+    </section>
+    <section id="settings">
+        <header>
+            <h1>환경설정</h1>
+        </header>
+        <div id="settings-wrapper">
+            <div class="settings-content">
+                <label for="sound">배경 음악:</label>
+                <div class="select-wrapper">
+                    <select id="sound" onchange="changeBGM(this.value)">
+                        <option value="spring_walk" selected>신나는 봄산책</option>
+                        <option value="trip">나들이 왔어요</option>
+                        <option value="waterfall">Waterfall</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-content">
+                <label for="volume">음악 볼륨:</label>
+                <input type="range" id="volume" min="0" max="100" value="30" onchange="changeVolume(this.value)">
+            </div>
+            <div class="settings-content">
+                <label for="darkmode" style="margin-top: 5px">다크모드:</label>
+                <label class="switch">
+                    <input type="checkbox" id="darkmode" onclick="toggleDarkMode(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="settings-content">
+                <label for="ball-select">공 선택:</label>
+                <div class="ball-selector">
+                    <div class="select-wrapper">
+                        <select id="ball-select" onchange="updateBallPreview(this.value)">
+                            <option value="classic">클래식</option>
+                            <option value="neon">네온</option>
+                            <option value="fire">파이어</option>
+                            <option value="shadow">섀도우</option>
+                        </select>
+                    </div>
+                    <div id="ball-preview" class="ball-preview classic"></div>
+                </div>
+            </div>
+            <button class="menu-btn" onclick="goMenu()">< 뒤로가기</button>
+        </div>
+    </section>
+    <section id="credit">
+        <h1>정보</h1>
+        <h3>개발자</h3>
+        <p>202211305 박지원</p>
+        <p>학번 이어진</p>
+        <p>학번 이름</p>
+        <p>학번 이름</p>
+        <h3>BGM</h3>
+        <p>신나는 봄산책 - <a href="https://mewc.at/songs/6407" target="_blank">Exciting Spring Walk</a></p>
+        <p>나들이 왔어요 - <a href="https://mewc.at/songs/6098" target="_blank">I’m on an Outing</a></p>
+        <p>Waterfall - <a href="https://mewc.at/songs/4081" target="_blank">Waterfall</a></p>
+
+        <button class="menu-btn" id="credit-back" onclick="goMenu()">< 뒤로가기</button>
+    </section>
+</div>
+<footer>웹프로그래밍 팀 프로젝트 PA#2</footer>
+</body>
+</html>
