@@ -2,31 +2,21 @@
 2025년 1학기 웹 프로그래밍 PA#2
 
 ## 환경 셋업
-### Python 설치
-![image](https://github.com/user-attachments/assets/8370d332-fcf3-4ba0-850d-f393e86de095)
-
-[이 링크](https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe)에서 파이썬을 설치합니다.
-
-설치 중, `Add python.exe to PATH` 부분에 반드시 체크해 주세요.
-
-
-### PyCharm 설치
-[이 링크](https://www.jetbrains.com/pycharm/download/?section=windows)에서 PyCharm Community Edition을 설치합니다.
-
-Community Edition은 스크롤해서 페이지 밑으로 내리면 있습니다.
+### WebStorm 설치
+[이 링크](https://www.jetbrains.com/ko-kr/webstorm/)에서 웹스톰을 설치합니다.
 
 
 ### GitHub 레포지토리 빌드
 ![image](https://github.com/user-attachments/assets/e990a0ff-db62-44b4-b851-3e1651328375)
 
-PyCharm 설치 후 프로젝트 선택 화면에서 Get from VCS 버튼을 클릭하고
+WebStorm 설치 후 프로젝트 선택 화면에서 Get from VCS 버튼을 클릭하고
 
 ![image](https://github.com/user-attachments/assets/955396ce-5a43-47ba-8d87-eb42cdd48ca0)
-URL 부분에 `https://github.com/wlonep/basicprj-c06.git`을 붙여넣고 프로젝트를 생성합니다.
+URL 부분에 `https://github.com/wlonep/brick-break.git`을 붙여넣고 프로젝트를 생성합니다.
 
 
 ### 용어의 정의
-- 정상적으로 빌드가 된 상태라면 PyCharm 우상단에 사진과 같이 아이콘이 떠 있습니다.
+- 정상적으로 빌드가 된 상태라면 WebStorm 우상단에 사진과 같이 아이콘이 떠 있습니다.
 - 좌측부터 각각 fetch, commit, push 역할을 수행합니다.
 ![image](https://github.com/user-attachments/assets/7f825393-71be-475a-971f-c180559ce8fc)
 
