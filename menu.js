@@ -8,27 +8,36 @@ window.onload = () => {
     toggleDarkMode(localStorage.getItem("dark-mode") === "true");
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
     updateBallPreview(localStorage.getItem("ballType") || "classic");
+    changeVolume("sfx-volume");
 };
+
+window.onclick = (e) => {
+    const target = e.target;
+    if (target.tagName === "BUTTON" || target.tagName === "SELECT" || target.tagName === "INPUT") {
+        clickButton();
+    }
+}
 
 function playSound() {
     if (!bgm) return;
     bgm.play();
     bgm.loop = true;
-    changeVolume();
+    changeVolume("volume");
 }
 
-function changeVolume(volume) {
-    if (!volume) volume = localStorage.getItem("volume") || 30;
-    localStorage.setItem("volume", volume);
-    const target = document.querySelector("#volume");
+function changeVolume(type, volume) {
+    if (!volume) volume = localStorage.getItem(type) || 30;
+    localStorage.setItem(type, volume);
+    const target = document.querySelector(`#${type}`);
     const color = localStorage.getItem("dark-mode") === "true" ? "#008C8A" : "#FF7875";
     target.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${volume}%, #ddd ${volume}%, #ddd 100%)`;
-    bgm.volume = volume / 100;
+    if (type === "volume") {
+        bgm.volume = volume / 100;
+    }
     target.value = volume;
 }
 
 function changeBGM(music) {
-    clickButton();
     bgm.pause();
     bgm = new Audio(`src/bgm/${music}.mp3`);
     playSound();
@@ -37,7 +46,6 @@ function changeBGM(music) {
 }
 
 function openSettings() {
-    clickButton();
     const settings = document.getElementById("settings");
     const menu = document.getElementById("main-menu");
 
@@ -47,12 +55,11 @@ function openSettings() {
 
 function clickButton() {
     const sfx = new Audio("src/sfx/button.mp3");
-    sfx.volume = 0.25;
-    sfx.play();
+    sfx.volume = localStorage.getItem("sfx-volume") / 100;
+    sfx.play().then();
 }
 
 function toggleDarkMode(checked) {
-    clickButton();
     localStorage.setItem("dark-mode", checked);
     if (checked) {
         document.body.classList.add("dark-mode");
@@ -62,11 +69,10 @@ function toggleDarkMode(checked) {
         document.body.classList.remove("dark-mode");
         document.querySelector('#darkmode').checked = false;
     }
-    changeVolume();
+    changeVolume("volume");
 }
 
 function goMenu() {
-    clickButton();
     const sections = document.getElementsByTagName("section");
     for (let i = 0; i < sections.length; i++) {
         sections[i].style.display = "none";
@@ -83,7 +89,6 @@ function updateBallPreview(type) {
 }
 
 function openCredit() {
-    clickButton();
     const credit = document.getElementById("credit");
     const menu = document.getElementById("main-menu");
 

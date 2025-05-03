@@ -33,12 +33,18 @@
                         <option value="spring_walk" selected>신나는 봄산책</option>
                         <option value="trip">나들이 왔어요</option>
                         <option value="waterfall">Waterfall</option>
+                        <option value="modern_chic">Modern Chic</option>
+                        <option value="light_trip">가볍게 떠나는 여행</option>
                     </select>
                 </div>
             </div>
             <div class="settings-content">
-                <label for="volume">음악 볼륨:</label>
-                <input type="range" id="volume" min="0" max="100" value="30" onchange="changeVolume(this.value)">
+                <label for="volume">BGM 음량:</label>
+                <input type="range" id="volume" min="0" max="100" value="30" onchange="changeVolume('volume', this.value)">
+            </div>
+            <div class="settings-content">
+                <label for="sfx-volume">효과음 음량:</label>
+                <input type="range" id="sfx-volume" min="0" max="100" value="30" onchange="changeVolume('sfx-volume', this.value)">
             </div>
             <div class="settings-content">
                 <label for="darkmode" style="margin-top: 5px">다크모드:</label>
