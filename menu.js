@@ -9,6 +9,7 @@ window.onload = () => {
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
     updateBallPreview(localStorage.getItem("ballType") || "classic");
     changeVolume("sfx-volume");
+    //openInfinite();
 };
 
 window.onclick = (e) => {
@@ -46,11 +47,12 @@ function changeBGM(music) {
 }
 
 function openSettings() {
-    const settings = document.getElementById("settings");
-    const menu = document.getElementById("main-menu");
-
-    settings.style.display = "block";
-    menu.style.display = "none";
+    $("#main-menu").animate({ left: "-20%", opacity: "0" }, 300, function () {
+        $(this).hide();
+        $("#settings")
+            .css({ left: "20%", display: "block", opacity: "0" })
+            .animate({ left: "0", opacity: "1" }, 300);
+    });
 }
 
 function clickButton() {
@@ -62,23 +64,22 @@ function clickButton() {
 function toggleDarkMode(checked) {
     localStorage.setItem("dark-mode", checked);
     if (checked) {
-        document.body.classList.add("dark-mode");
-        document.querySelector('#darkmode').checked = true;
-    }
-    else {
-        document.body.classList.remove("dark-mode");
-        document.querySelector('#darkmode').checked = false;
+        $("body").addClass("dark-mode");
+        $("#darkmode").prop("checked", true);
+    } else {
+        $("body").removeClass("dark-mode");
+        $("#darkmode").prop("checked", false);
     }
     changeVolume("volume");
 }
 
 function goMenu() {
-    const sections = document.getElementsByTagName("section");
-    for (let i = 0; i < sections.length; i++) {
-        sections[i].style.display = "none";
-    }
-    const menu = document.getElementById("main-menu");
-    menu.style.display = "block";
+    $("section").not("#main-menu").animate({ left: "30%", opacity: "0" }, 300, function () {
+        $(this).hide();
+    });
+    $("#main-menu")
+        .css({ left: "-30%", display: "block", opacity: "0" })
+        .animate({ left: "0%", opacity: "1" }, 300);
 }
 
 function updateBallPreview(type) {
@@ -89,9 +90,10 @@ function updateBallPreview(type) {
 }
 
 function openCredit() {
-    const credit = document.getElementById("credit");
-    const menu = document.getElementById("main-menu");
-
-    credit.style.display = "block";
-    menu.style.display = "none";
+    $("#main-menu").animate({ left: "-20%", opacity: "0" }, 300, function () {
+        $(this).hide();
+        $("#credit")
+            .css({ left: "20%", display: "block", opacity: "0" })
+            .animate({ left: "0", opacity: "1" }, 300);
+    });
 }
