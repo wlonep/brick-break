@@ -6,7 +6,7 @@ function openInfinite() {
     settings.style.display = "block";
     menu.style.display = "none";
 }
-
+asdf
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
