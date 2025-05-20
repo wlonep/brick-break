@@ -9,7 +9,6 @@ window.onload = () => {
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
     updateBallPreview(localStorage.getItem("ballType") || "classic");
     changeVolume("sfx-volume");
-    //openInfinite();
 };
 
 window.onclick = (e) => {
@@ -95,5 +94,14 @@ function openCredit() {
         $("#credit")
             .css({ left: "20%", display: "block", opacity: "0" })
             .animate({ left: "0", opacity: "1" }, 300);
+    });
+}
+
+function openGame() {
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
+        $(this).hide();
+        $("#game")
+            .css({left: "20%", display: "block", opacity: "0"})
+            .animate({left: "0", opacity: "1"}, 300);
     });
 }

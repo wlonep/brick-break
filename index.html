@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="menu.js"></script>
+    <script src="js/menu.js"></script>
 </head>
 <body>
 <div id="container">
@@ -15,25 +15,22 @@
             <h1>벽돌깨기</h1>
         </header>
         <div id="menu">
-            <button class="menu-btn">스토리 모드</button>
-            <button class="menu-btn" onclick="openInfinite()">무한 모드</button>
+            <button class="menu-btn" onclick="openGame()">게임시작</button>
             <button class="menu-btn" onclick="openSettings()">환경설정</button>
             <button class="menu-btn" onclick="openCredit()">정보</button>
         </div>
     </section>
-    <section id="game-infinite">
-        <header>
-            <h1>무한 모드</h1>
-        </header>
-        <div id="game-info">
+    <section id="game">
+        <!--<div id="game-info">
             <div id="score">점수: 0</div>
             <div id="time">남은 시간: </div>
-        </div>
+        </div>-->
         <div id="game-wrapper">
             <canvas id="game-canvas"></canvas>
-            <script src="game-infinite.js"></script>
+            <script src="js/canvas.js"></script>
+            <script src="js/ship.js"></script>
+            <script src="js/ball.js"></script>
         </div>
-        <button class="menu-btn" onclick="goMenu()">< 뒤로가기</button>
     </section>
     <section id="settings">
         <header>
