@@ -296,8 +296,8 @@ h3 {
 }
 
 .planet-container {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -310,7 +310,7 @@ h3 {
     z-index: 10;
     font-size: 50px;
     color: white;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 1);
     pointer-events: none;
     transition: transform 0.3s ease
 }
