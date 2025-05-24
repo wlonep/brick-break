@@ -133,15 +133,13 @@ function planetHoverEvent(){
 
     $(".level-btn").mouseover(function(){
         $(this).css({
-        'transform' : 'scale(1.1)',
-        'transform' : 'translateY(-10px)',
+        'transform' : 'scale(1.1) translateY(-10px)',
         'cursor' : 'pointer'
         })
     })
     $(".level-btn").mouseleave(function(){
         $(this).css({
-        'transform' : 'scale(1.0)',
-        'transform' : 'translateY(10px)',
+        'transform' : 'scale(1.0) translateY(10px)',
         'cursor' : 'default'
         })
     })
