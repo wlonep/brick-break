@@ -1,8 +1,8 @@
 
-const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400, 450];
-const asteroidWidth = 50;
-const asteroidHeight = 50;
-const asteroidSpeed = 2;
+const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400];
+const asteroidWidth = 100;
+const asteroidHeight = 100;
+const asteroidSpeed = 0.5;
 const mapHeight = canvas.height;
 
 const asteroidImages = [];
@@ -67,4 +67,4 @@ function drawAsteroids(){
 setInterval(() => {
     const randomIndex = Math.floor(Math.random() * fall_point.length);
     createAsteroid(fall_point[randomIndex]);
-}, 1000);
+}, 5000);
