@@ -15,11 +15,13 @@ for (let i = 1; i <= 5; i++) {
 let asteroids = [];
 
 function createAsteroid(x){
+    const spriteIndex = Math.floor(Math.random() * asteroidImages.length);
     asteroids.push({
         x: x,
         y: 0,
         width: asteroidWidth,
-        height: asteroidHeight
+        height: asteroidHeight,
+        img: asteroidImages[spriteIndex]
     });
 }
 
@@ -36,7 +38,7 @@ function updateAsteroid(){
         }
 
         //바닥에 운석 충돌
-        if (asteroid.y > mapHeight){
+        if (asteroid.y > canvas.height){
             asteroids.splice(i, 1);
             //subtractLives();
             return;
@@ -55,15 +57,10 @@ function isColliding(ball, asteroid){
 
 function drawAsteroids(){
     for (const asteroid of asteroids) {
-        if (asteroid.img.complete) {
-            ctx.drawImage(
-                asteroid.img,
-                asteroid.x,
-                asteroid.y,
-                asteroid.width,
-                asteroid.height
-            );
-        }
+        if (!asteroid.img) continue;
+        if (!asteroid.img.complete) continue;
+
+        ctx.drawImage(asteroid.img, asteroid.x, asteroid.y, asteroid.width, asteroid.height);
     }
 }
 
