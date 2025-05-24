@@ -135,6 +135,8 @@ function victory() {
 }
 
 function startGame() {
+    // todo: 게임 시작 전 5초 카운트다운
+    // todo: 점수, 목숨, 퍼즈 기능 추가
     initCanvas();
     eventHandler();
     draw();
