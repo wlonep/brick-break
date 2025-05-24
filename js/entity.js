@@ -5,13 +5,20 @@ const asteroidHeight = 50;
 const asteroidSpeed = 2;
 const mapHeight = canvas.height;
 
+const asteroidImages = [];
+for (let i = 1; i <= 5; i++) {
+    const img = new Image();
+    img.src = `src/asteroid/asteroid_${i}.png`;
+    asteroidImages.push(img);
+}
+
 let asteroids = [];
 
 function createAsteroid(x){
     asteroids.push({
         x: x,
         y: 0,
-        width: astroidWidth,
+        width: asteroidWidth,
         height: asteroidHeight
     });
 }
@@ -23,15 +30,15 @@ function updateAsteroid(){
 
         //공 & 운석 충돌
         if (ball && isColliding(ball, asteroid)){
-            asteroids.splice(i, 1);
             //ballhitsAsteroid()
+            asteroids.splice(i, 1);
             continue;
         }
 
         //바닥에 운석 충돌
         if (asteroid.y > mapHeight){
             asteroids.splice(i, 1);
-            //게임 종료 함수
+            //subtractLives();
             return;
         }
     }
@@ -47,7 +54,17 @@ function isColliding(ball, asteroid){
 }
 
 function drawAsteroids(){
-
+    for (const asteroid of asteroids) {
+        if (asteroid.img.complete) {
+            ctx.drawImage(
+                asteroid.img,
+                asteroid.x,
+                asteroid.y,
+                asteroid.width,
+                asteroid.height
+            );
+        }
+    }
 }
 
 setInterval(() => {
