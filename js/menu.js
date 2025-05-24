@@ -128,7 +128,6 @@ function changeShipColor(){
             })
             document.dispatchEvent(shipChangedEvent)
         })
-
 }
 
 function openCredit() {
@@ -177,11 +176,17 @@ function planetHoverEvent(){
         'transform' : 'scale(1.1) translateY(-10px)',
         'cursor' : 'pointer'
         })
+        $(this).prev().css({
+            'transform' : 'scale(1.1) translateY(-10px)'
+        })
     })
     $(".level-btn").mouseleave(function(){
         $(this).css({
         'transform' : 'scale(1.0) translateY(10px)',
         'cursor' : 'default'
+        })
+        $(this).prev().css({
+            'transform' : 'scale(1.0) translateY(10px)'
         })
     })
 }
