@@ -74,19 +74,14 @@
             <div class="settings-content">
                 <label for="volume">BGM 음량:</label>
                 <input type="range" id="volume" min="0" max="100" value="30"
-                       onchange="changeVolume('volume', this.value)">
-            </div>
+                       onchange="changeVolume('volume', this.value)"
+                       oninput="changeVolume('volume', this.value)">
+            </div>            
             <div class="settings-content">
                 <label for="sfx-volume">효과음 음량:</label>
                 <input type="range" id="sfx-volume" min="0" max="100" value="30"
-                       onchange="changeVolume('sfx-volume', this.value)">
-            </div>
-            <div class="settings-content">
-                <label for="darkmode" style="margin-top: 5px">다크모드:</label>
-                <label class="switch">
-                    <input type="checkbox" id="darkmode" onclick="toggleDarkMode(this.checked)">
-                    <span class="slider"></span>
-                </label>
+                       onchange="changeVolume('sfx-volume', this.value)"
+                       oninput="changeVolume('sfx-volume', this.value)">
             </div>
             <div class="settings-content">
                 <label for="ball-select">공 선택:</label>
