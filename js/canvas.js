@@ -85,7 +85,9 @@ function draw() {
     drawShipBar();
     drawShip();
     updateBall();
+    updateAsteroid();
     drawBall();
+    drawAsteroids();
     requestAnimationFrame(draw);
 }
 
