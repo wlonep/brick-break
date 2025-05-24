@@ -5,7 +5,6 @@ window.onload = () => {
     navigator.mediaDevices
         .getUserMedia({audio: true})
         .then(() => playSound());
-    toggleDarkMode(localStorage.getItem("dark-mode") === "true");
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
     updateBallPreview(localStorage.getItem("ballType") || "classic");
     changeVolume("sfx-volume");
@@ -21,7 +20,7 @@ window.onclick = (e) => {
 
 function playSound() {
     if (!bgm) return;
-    bgm.play(); //어진: 콘솔창 보니까 여기 오류있다는데요?
+    bgm.play(); 
     bgm.loop = true;
     changeVolume("volume");
 }
@@ -30,7 +29,7 @@ function changeVolume(type, volume) {
     if (!volume) volume = localStorage.getItem(type) || 30;
     localStorage.setItem(type, volume);
     const target = document.querySelector(`#${type}`);
-    const color = localStorage.getItem("dark-mode") === "true" ? "#008C8A" : "#FF7875";
+    const color = "#FF7875";
     target.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${volume}%, #ddd ${volume}%, #ddd 100%)`;
     if (type === "volume") {
         bgm.volume = volume / 100;
@@ -59,18 +58,6 @@ function clickButton() {
     const sfx = new Audio("src/sfx/button.mp3");
     sfx.volume = localStorage.getItem("sfx-volume") / 100;
     sfx.play().then();
-}
-
-function toggleDarkMode(checked) {
-    localStorage.setItem("dark-mode", checked);
-    if (checked) {
-        $("body").addClass("dark-mode");
-        $("#darkmode").prop("checked", true);
-    } else {
-        $("body").removeClass("dark-mode");
-        $("#darkmode").prop("checked", false);
-    }
-    changeVolume("volume");
 }
 
 function goMenu() {
@@ -175,19 +162,19 @@ function startGame_Level(level) {
 function planetHoverEvent() {
     $(".level-btn").mouseenter(function () {
         $(this).css({
-            'transform': 'scale(1.1) translateY(-10px)',
+            'transform': 'scale(1.05) translateY(-5px)',
             'cursor': 'pointer'
         })
         $(this).prev().css({
-            'transform': 'scale(1.1) translateY(-10px)'
+            'transform': 'scale(1.05) translateY(-5px)'
         })
     }).mouseleave(function () {
         $(this).css({
-            'transform': 'scale(1.0) translateY(10px)',
+            'transform': 'scale(1.0) translateY(5px)',
             'cursor': 'default'
         })
         $(this).prev().css({
-            'transform': 'scale(1.0) translateY(10px)'
+            'transform': 'scale(1.0) translateY(5px)'
         })
     })
 }
