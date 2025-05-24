@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="menu.js"></script>
+    <script src="js/menu.js"></script>
 </head>
 <body>
 <div id="container">
@@ -15,25 +15,44 @@
             <h1>벽돌깨기</h1>
         </header>
         <div id="menu">
-            <button class="menu-btn">스토리 모드</button>
-            <button class="menu-btn" onclick="openInfinite()">무한 모드</button>
+            <button class="menu-btn" onclick="openGame()">게임시작</button>
             <button class="menu-btn" onclick="openSettings()">환경설정</button>
             <button class="menu-btn" onclick="openCredit()">정보</button>
         </div>
     </section>
-    <section id="game-infinite">
-        <header>
-            <h1>무한 모드</h1>
-        </header>
-        <div id="game-info">
+    <section id="game">
+        <div id="level_menu">   
+            <h1>탐사할 행성을 선택하세요</h1>
+            <div class="level-buttons">
+                <div class="planet-container">
+                    <div class="planet-number">1</div>
+                    <img class="level-btn" src="src/planet/level1.gif" alt="Level 1">
+                </div>
+                <div class="planet-container">
+                    <div class="planet-number">2</div>
+                    <img class="level-btn" src="src/planet/level2.gif" alt="Level 2">
+                </div>
+                <div class="planet-container">
+                    <div class="planet-number">3</div>
+                    <img class="level-btn" src="src/planet/level3.gif" alt="Level 3">
+                </div>
+                <div class="planet-container">
+                    <div class="planet-number">4</div>
+                    <img class="level-btn" src="src/planet/level4.gif" alt="Level 4">
+                </div>
+            </div>
+            <button class="menu-btn" onclick="goMenu()">뒤로가기</button>
+        </div>
+        <!--<div id="game-info">
             <div id="score">점수: 0</div>
             <div id="time">남은 시간: </div>
-        </div>
+        </div>-->
         <div id="game-wrapper">
             <canvas id="game-canvas"></canvas>
-            <script src="game-infinite.js"></script>
+            <script src="js/canvas.js"></script>
+            <script src="js/ship.js"></script>
+            <script src="js/ball.js"></script>
         </div>
-        <button class="menu-btn" onclick="goMenu()">< 뒤로가기</button>
     </section>
     <section id="settings">
         <header>
@@ -81,7 +100,15 @@
                     <div id="ball-preview" class="ball-preview classic"></div>
                 </div>
             </div>
-            <button class="menu-btn" onclick="goMenu()">< 뒤로가기</button>
+            <div class="settings-content">
+                <label for="ship-select">우주선 선택:</label>
+                <div class="ship-selector">
+                    <img class="ship-btn" src="src/ship/ship_blue.png" alt="Blue ship">
+                    <img class="ship-btn" src="src/ship/ship_green.png" alt="Blue ship">
+                    <img class="ship-btn" src="src/ship/ship_red.png" alt="Blue ship">
+                </div>
+            </div>
+            <button class="menu-btn" onclick="goMenu()">뒤로가기</button>
         </div>
     </section>
     <section id="credit">
@@ -89,8 +116,8 @@
         <h3>개발자</h3>
         <p>202211305 박지원</p>
         <p>202211339 이어진</p>
-        <p>학번 이름</p>
-        <p>학번 이름</p>
+        <p>학번을몰라요 이명종</p>
+        <p>학번을몰라요 송정우</p>
         <h3>BGM</h3>
         <p>신나는 봄산책 - <a href="https://www.mewpot.com/songs/6407" target="_blank">Exciting Spring Walk</a></p>
         <p>나들이 왔어요 - <a href="https://www.mewpot.com/songs/6098" target="_blank">I’m on an Outing</a></p>
