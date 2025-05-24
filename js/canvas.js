@@ -6,13 +6,6 @@ bgImg1.src = 'src/background/stage_1_1.png';
 let bgImg2 = new Image();
 bgImg2.src = 'src/background/stage_1_2.png';
 
-const shipImg = new Image();
-shipImg.src = localStorage.getItem("shipColor") || 'src/ship/ship_green.png';
-
-document.addEventListener('shipColorChanged', function (event) {
-    shipImg.src = event.detail.shipSrc;
-})
-
 const ballImg = new Image(); //todo. 공 종류 바꿔야함.
 ballImg.src = 'src/ball/ball.png';
 
