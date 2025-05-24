@@ -115,12 +115,23 @@ function startGame() {
     draw();
 }
 
-Promise.all([
-    new Promise(res => bgImg1.onload = res),
-    new Promise(res => bgImg2.onload = res),
-    new Promise(res => shipImg.onload = res),
-]).then(startGame);
+// Promise.all([
+//     new Promise(res => bgImg1.onload = res),
+//     new Promise(res => bgImg2.onload = res),
+//     new Promise(res => shipImg.onload = res),
+// ]).then(startGame);
+
+//어진) 새로 작성한 부분입니다
+function init_GameLevel(level){
+    alert(`레벨 ${level}실행`);
+
+    //게임 난이도, 블록 배치, 속도
+    //여기서 설정하고 게임시작하면 되지 않을까?
+
+    startGame();
+}
 
 $(window).on('resize', () => initCanvas());
+window.init_GameLevel = init_GameLevel;
 
 

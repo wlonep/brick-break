@@ -20,7 +20,7 @@ window.onclick = (e) => {
 
 function playSound() {
     if (!bgm) return;
-    bgm.play();
+    bgm.play(); //어진: 콘솔창 보니까 여기 오류있다는데요?
     bgm.loop = true;
     changeVolume("volume");
 }
@@ -102,6 +102,45 @@ function openGame() {
         $(this).hide();
         $("#game")
             .css({left: "20%", display: "block", opacity: "0"})
-            .animate({left: "0", opacity: "1"}, 300);
+            .animate({left: "0", opacity: "1"}, 300, function(){
+                //인게임은 가리고 레벨 메뉴부터 출력
+                $("#game-wrapper").hide();
+                $("#level_menu").css("display", "block");
+                planetHoverEvent();
+            });
     });
+
+    $(".level-btn").on("click", function(){
+        let level = $(this).index()+1;
+        startGame_Level(level);
+    })
+}
+
+function startGame_Level(level){
+    $("#level_menu").hide(300, function(){
+        $("#game-wrapper").show(300, function(){
+            if(window.init_GameLevel){
+                window.init_GameLevel(level);
+            }
+            else
+                alert("게임 호출 실패");
+        });
+    });
+}
+
+function planetHoverEvent(){
+    let level = $(this).index()+1;
+
+    $(".level-btn").mouseover(function(){
+        $(this).css({
+        'transform' : 'scale(1.1) translateY(-10px)',
+        'cursor' : 'pointer'
+        })
+    })
+    $(".level-btn").mouseleave(function(){
+        $(this).css({
+        'transform' : 'scale(1.0) translateY(10px)',
+        'cursor' : 'default'
+        })
+    })
 }
