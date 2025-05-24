@@ -9,6 +9,7 @@ window.onload = () => {
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
     updateBallPreview(localStorage.getItem("ballType") || "classic");
     changeVolume("sfx-volume");
+    changeShipColor();
 };
 
 window.onclick = (e) => {
@@ -88,6 +89,48 @@ function updateBallPreview(type) {
     localStorage.setItem("ballType", type);
 }
 
+function changeShipColor(){
+    const saved_shipSrc = localStorage.getItem("shipColor");
+    if(saved_shipSrc){
+        $(".ship-btn").each(function(){
+            let imgSrc = $(this).attr("src");
+            if(imgSrc === saved_shipSrc){
+                $(this).css({
+                    'border-color':'white',
+                    'box-shadow':'0 0 10px rgba(255, 255, 255, 0.5)'
+                })
+            }
+        })
+    }
+
+    $(".ship-btn")
+        .mouseenter(function(){
+            $(this).css({'cursor' : 'pointer'})
+        })
+        .mouseleave(function(){
+            $(this).css({'cursor' : 'default'})
+        })
+        .on("click",  function(){
+            $(".ship-btn").css({
+                'border-color':'none',
+                'box-shadow':'none'
+            })
+            $(this).css({
+                'border-color':'white',
+                'box-shadow':'0 0 10px rgba(255, 255, 255, 0.5)'
+            })
+
+            let shipSrc = $(this).attr("src");
+            localStorage.setItem("shipColor", shipSrc);
+
+            const shipChangedEvent = new CustomEvent('shipColorChanged', {
+                detail: {shipSrc : shipSrc}
+            })
+            document.dispatchEvent(shipChangedEvent)
+        })
+
+}
+
 function openCredit() {
     $("#main-menu").animate({ left: "-20%", opacity: "0" }, 300, function () {
         $(this).hide();
@@ -111,7 +154,7 @@ function openGame() {
     });
 
     $(".level-btn").on("click", function(){
-        let level = $(this).index()+1;
+        let level = $(this).parent().index()+1;
         startGame_Level(level);
     })
 }
@@ -119,7 +162,7 @@ function openGame() {
 function startGame_Level(level){
     $("#level_menu").hide(300, function(){
         $("#game-wrapper").show(300, function(){
-            if(window.init_GameLevel){
+            if(window.init_GameLevel){ //근데 전역함수 써도 됨?
                 window.init_GameLevel(level);
             }
             else
@@ -129,9 +172,7 @@ function startGame_Level(level){
 }
 
 function planetHoverEvent(){
-    let level = $(this).index()+1;
-
-    $(".level-btn").mouseover(function(){
+    $(".level-btn").mouseenter(function(){
         $(this).css({
         'transform' : 'scale(1.1) translateY(-10px)',
         'cursor' : 'pointer'

@@ -7,9 +7,13 @@ let bgImg2 = new Image();
 bgImg2.src = 'src/background/stage_1_2.png';
 
 const shipImg = new Image();
-shipImg.src = 'src/ship/ship_green.png';
+shipImg.src = localStorage.getItem("shipColor") || 'src/ship/ship_green.png';
 
-const ballImg = new Image();
+document.addEventListener('shipColorChanged', function (event) {
+    shipImg.src = event.detail.shipSrc;
+})
+
+const ballImg = new Image(); //todo. 공 종류 바꿔야함.
 ballImg.src = 'src/ball/ball.png';
 
 let scrollY = 0;
@@ -121,7 +125,6 @@ function startGame() {
 //     new Promise(res => shipImg.onload = res),
 // ]).then(startGame);
 
-//어진) 새로 작성한 부분입니다
 function init_GameLevel(level){
     alert(`레벨 ${level}실행`);
 
