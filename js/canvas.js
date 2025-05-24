@@ -86,8 +86,10 @@ function draw() {
     drawShip();
     updateBall();
     updateAsteroid();
+    updateEnemyShip();
     drawBall();
     drawAsteroids();
+    drawEnemyShip();
     requestAnimationFrame(draw);
 }
 
@@ -147,6 +149,12 @@ function startGame() {
 function init_GameLevel(level) {
     bgImg1.src = `src/background/stage_${level}_1.png`;
     bgImg2.src = `src/background/stage_${level}_2.png`;
+
+    //난이도 별 상대 우주선 색상 다르게 하는거로 했음
+    enemyShipImg.src = `src/ship/enemy_${level}.png`;
+
+    enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요?
+    enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
     //게임 난이도, 블록 배치, 속도
     //여기서 설정하고 게임시작하면 되지 않을까?

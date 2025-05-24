@@ -2,7 +2,14 @@ const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400];
 const asteroidWidth = 100;
 const asteroidHeight = 100;
 const asteroidSpeed = 0.5;
-const mapHeight = canvas.height;
+
+let enemyShipImg = new Image(); // 이미지 객체
+let enemyShipX = 0;
+let enemyShipY = 0;
+const enemyShipWidth = 64;
+const enemyShipHeight = 64;
+const enemyShipSpeed = 1;
+let enemyShipInitialized = false;
 
 const asteroidImages = [];
 for (let i = 1; i <= 5; i++) {
@@ -49,6 +56,31 @@ function updateAsteroid(){
     }
 }
 
+const directionChoices = [-enemyShipSpeed, 0, enemyShipSpeed];
+let count = 0;
+let enemyShipdx = 0;
+
+function updateEnemyShip() {
+    if (!enemyShipInitialized && canvas.width && canvas.height) {
+        enemyShipY = canvas.height * 0.1;
+        enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
+        enemyShipInitialized = true;
+    }
+
+    count++;
+    if (count == 100) {
+        enemyShipdx = directionChoices[Math.floor(Math.random() * directionChoices.length)];
+        count = 0;
+    }
+
+    enemyShipX += enemyShipdx;
+
+    if (enemyShipX < 0) enemyShipX = 0;
+    if (enemyShipX + enemyShipWidth > canvas.width) {
+        enemyShipX = canvas.width - enemyShipWidth;
+    }
+}
+
 function isColliding(ball, asteroid){
     return (
         ball.x < asteroid.x + asteroid.width &&
@@ -76,6 +108,12 @@ function drawAsteroids(){
             asteroid.height
         );
         ctx.restore();
+    }
+}
+
+function drawEnemyShip() {
+    if (enemyShipImg.complete) {
+        ctx.drawImage(enemyShipImg, enemyShipX, enemyShipY, enemyShipWidth, enemyShipHeight);
     }
 }
 
