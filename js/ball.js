@@ -40,6 +40,8 @@ function updateBall() {
 
     if (ball.y >= canvas.height) {
         ball = null;
+        if (subtractLives())
+            isStart = false;
         return;
     }
 

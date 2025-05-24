@@ -1,6 +1,7 @@
 const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
 
+let lives = 3;
 let isStart = false;
 
 let bgImg1 = new Image();
@@ -113,6 +114,24 @@ function eventHandler() {
             isStart = true;
         }
     });
+}
+
+function subtractLives() {
+    lives--;
+    if (lives === 0) return defeat();
+    return true;
+}
+
+function finishGame() {
+
+}
+
+function defeat() {
+
+}
+
+function victory() {
+
 }
 
 function startGame() {
