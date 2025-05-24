@@ -4,7 +4,7 @@ function fireBall() {
     const centerX = shipX + shipWidth / 2;
     const centerY = shipY;
 
-    const speed = 2.5;
+    const speed = 5;
 
     ball = {
         x: centerX - ballSize / 2,

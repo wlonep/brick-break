@@ -1,13 +1,19 @@
 const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
 
-let bgImg1 = new Image();
-bgImg1.src = 'src/background/stage_1_1.png';
-let bgImg2 = new Image();
-bgImg2.src = 'src/background/stage_1_2.png';
+let isStart = false;
 
-const ballImg = new Image(); //todo. 공 종류 바꿔야함.
-ballImg.src = 'src/ball/ball.png';
+let bgImg1 = new Image();
+let bgImg2 = new Image();
+bgImg1.onerror = () => {
+    bgImg1.src = "src/background/callback.png";
+};
+bgImg2.onerror = () => {
+    bgImg2.src = "src/background/callback.png";
+};
+
+const ballImg = new Image();
+ballImg.src = `src/ball/${localStorage.getItem("ballType")}.png` || 'src/ball/blue.png';
 
 let scrollY = 0;
 let stopScroll = false;
@@ -102,7 +108,10 @@ function eventHandler() {
     });
     $(canvas).on('mousedown', function (e) {
         e.preventDefault();
-        fireBall();
+        if (!isStart) {
+            fireBall();
+            isStart = true;
+        }
     });
 }
 
@@ -112,14 +121,9 @@ function startGame() {
     draw();
 }
 
-// Promise.all([
-//     new Promise(res => bgImg1.onload = res),
-//     new Promise(res => bgImg2.onload = res),
-//     new Promise(res => shipImg.onload = res),
-// ]).then(startGame);
-
-function init_GameLevel(level){
-    alert(`레벨 ${level}실행`);
+function init_GameLevel(level) {
+    bgImg1.src = `src/background/stage_${level}_1.png`;
+    bgImg2.src = `src/background/stage_${level}_2.png`;
 
     //게임 난이도, 블록 배치, 속도
     //여기서 설정하고 게임시작하면 되지 않을까?
