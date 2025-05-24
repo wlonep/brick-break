@@ -47,11 +47,11 @@ function changeBGM(music) {
 }
 
 function openSettings() {
-    $("#main-menu").animate({ left: "-20%", opacity: "0" }, 300, function () {
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
         $("#settings")
-            .css({ left: "20%", display: "block", opacity: "0" })
-            .animate({ left: "0", opacity: "1" }, 300);
+            .css({left: "20%", display: "block", opacity: "0"})
+            .animate({left: "0", opacity: "1"}, 300);
     });
 }
 
@@ -74,68 +74,71 @@ function toggleDarkMode(checked) {
 }
 
 function goMenu() {
-    $("section").not("#main-menu").animate({ left: "30%", opacity: "0" }, 300, function () {
+    $("section").not("#main-menu").animate({left: "30%", opacity: "0"}, 300, function () {
         $(this).hide();
     });
     $("#main-menu")
-        .css({ left: "-30%", display: "block", opacity: "0" })
-        .animate({ left: "0%", opacity: "1" }, 300);
+        .css({left: "-30%", display: "block", opacity: "0"})
+        .animate({left: "0%", opacity: "1"}, 300);
 }
 
 function updateBallPreview(type) {
-    const preview = document.getElementById("ball-preview");
-    preview.className = "ball-preview " + type;
+    let previewImage = new Image();
+    previewImage.src = `src/ball/${type}.png`;
+    previewImage.width = 20;
+    previewImage.height = 20;
+    $("#ball-preview").html(previewImage)
     document.querySelector('#ball-select').value = type;
     localStorage.setItem("ballType", type);
 }
 
-function changeShipColor(){
+function changeShipColor() {
     const saved_shipSrc = localStorage.getItem("shipColor");
-    if(saved_shipSrc){
-        $(".ship-btn").each(function(){
+    if (saved_shipSrc) {
+        $(".ship-btn").each(function () {
             let imgSrc = $(this).attr("src");
-            if(imgSrc === saved_shipSrc){
+            if (imgSrc === saved_shipSrc) {
                 $(this).css({
-                    'border-color':'white',
-                    'box-shadow':'0 0 10px rgba(255, 255, 255, 0.5)'
+                    'border-color': 'white',
+                    'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
                 })
             }
         })
     }
 
     $(".ship-btn")
-        .mouseenter(function(){
-            $(this).css({'cursor' : 'pointer'})
+        .mouseenter(function () {
+            $(this).css({'cursor': 'pointer'})
         })
-        .mouseleave(function(){
-            $(this).css({'cursor' : 'default'})
+        .mouseleave(function () {
+            $(this).css({'cursor': 'default'})
         })
-        .on("click",  function(){
+        .on("click", function () {
             $(".ship-btn").css({
-                'border-color':'none',
-                'box-shadow':'none'
+                'border-color': 'none',
+                'box-shadow': 'none'
             })
             $(this).css({
-                'border-color':'white',
-                'box-shadow':'0 0 10px rgba(255, 255, 255, 0.5)'
+                'border-color': 'white',
+                'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
             })
 
             let shipSrc = $(this).attr("src");
             localStorage.setItem("shipColor", shipSrc);
 
             const shipChangedEvent = new CustomEvent('shipColorChanged', {
-                detail: {shipSrc : shipSrc}
+                detail: {shipSrc: shipSrc}
             })
             document.dispatchEvent(shipChangedEvent)
         })
 }
 
 function openCredit() {
-    $("#main-menu").animate({ left: "-20%", opacity: "0" }, 300, function () {
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
         $("#credit")
-            .css({ left: "20%", display: "block", opacity: "0" })
-            .animate({ left: "0", opacity: "1" }, 300);
+            .css({left: "20%", display: "block", opacity: "0"})
+            .animate({left: "0", opacity: "1"}, 300);
     });
 }
 
@@ -144,7 +147,7 @@ function openGame() {
         $(this).hide();
         $("#game")
             .css({left: "20%", display: "block", opacity: "0"})
-            .animate({left: "0", opacity: "1"}, 300, function(){
+            .animate({left: "0", opacity: "1"}, 300, function () {
                 //인게임은 가리고 레벨 메뉴부터 출력
                 $("#game-wrapper").hide();
                 $("#level_menu").css("display", "block");
@@ -152,41 +155,39 @@ function openGame() {
             });
     });
 
-    $(".level-btn").on("click", function(){
-        let level = $(this).parent().index()+1;
+    $(".level-btn").on("click", function () {
+        let level = $(this).parent().index() + 1;
         startGame_Level(level);
     })
 }
 
-function startGame_Level(level){
-    $("#level_menu").hide(300, function(){
-        $("#game-wrapper").show(300, function(){
-            if(window.init_GameLevel){ //근데 전역함수 써도 됨?
+function startGame_Level(level) {
+    $("#level_menu").hide(300, function () {
+        $("#game-wrapper").show(300, function () {
+            if (window.init_GameLevel) { //근데 전역함수 써도 됨? // ㅇㅇ
                 window.init_GameLevel(level);
-            }
-            else
+            } else
                 alert("게임 호출 실패");
         });
     });
 }
 
-function planetHoverEvent(){
-    $(".level-btn").mouseenter(function(){
+function planetHoverEvent() {
+    $(".level-btn").mouseenter(function () {
         $(this).css({
-        'transform' : 'scale(1.1) translateY(-10px)',
-        'cursor' : 'pointer'
+            'transform': 'scale(1.1) translateY(-10px)',
+            'cursor': 'pointer'
         })
         $(this).prev().css({
-            'transform' : 'scale(1.1) translateY(-10px)'
+            'transform': 'scale(1.1) translateY(-10px)'
         })
-    })
-    $(".level-btn").mouseleave(function(){
+    }).mouseleave(function () {
         $(this).css({
-        'transform' : 'scale(1.0) translateY(10px)',
-        'cursor' : 'default'
+            'transform': 'scale(1.0) translateY(10px)',
+            'cursor': 'default'
         })
         $(this).prev().css({
-            'transform' : 'scale(1.0) translateY(10px)'
+            'transform': 'scale(1.0) translateY(10px)'
         })
     })
 }

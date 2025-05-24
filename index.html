@@ -21,7 +21,7 @@
         </div>
     </section>
     <section id="game">
-        <div id="level_menu">   
+        <div id="level_menu">
             <h1>탐사할 행성을 선택하세요</h1>
             <div class="level-buttons">
                 <div class="planet-container">
@@ -73,11 +73,13 @@
             </div>
             <div class="settings-content">
                 <label for="volume">BGM 음량:</label>
-                <input type="range" id="volume" min="0" max="100" value="30" onchange="changeVolume('volume', this.value)">
+                <input type="range" id="volume" min="0" max="100" value="30"
+                       onchange="changeVolume('volume', this.value)">
             </div>
             <div class="settings-content">
                 <label for="sfx-volume">효과음 음량:</label>
-                <input type="range" id="sfx-volume" min="0" max="100" value="30" onchange="changeVolume('sfx-volume', this.value)">
+                <input type="range" id="sfx-volume" min="0" max="100" value="30"
+                       onchange="changeVolume('sfx-volume', this.value)">
             </div>
             <div class="settings-content">
                 <label for="darkmode" style="margin-top: 5px">다크모드:</label>
@@ -91,17 +93,16 @@
                 <div class="ball-selector">
                     <div class="select-wrapper">
                         <select id="ball-select" onchange="updateBallPreview(this.value)">
-                            <option value="classic">클래식</option>
-                            <option value="neon">네온</option>
-                            <option value="fire">파이어</option>
-                            <option value="shadow">섀도우</option>
+                            <option value="blue">양성자</option>
+                            <option value="green">플라즈마</option>
+                            <option value="red">쿼크</option>
                         </select>
                     </div>
-                    <div id="ball-preview" class="ball-preview classic"></div>
+                    <div id="ball-preview"></div>
                 </div>
             </div>
             <div class="settings-content">
-                <label for="ship-select">우주선 선택:</label>
+                <label>우주선 선택:</label>
                 <div class="ship-selector">
                     <img class="ship-btn" src="src/ship/ship_blue.png" alt="Blue ship">
                     <img class="ship-btn" src="src/ship/ship_green.png" alt="Blue ship">
