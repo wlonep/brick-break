@@ -4,7 +4,7 @@ function fireBall() {
     const centerX = shipX + shipWidth / 2;
     const centerY = shipY;
 
-    const speed = 5;
+    const speed = 2;
 
     ball = {
         x: centerX - ballSize / 2,
@@ -41,7 +41,7 @@ function updateBall() {
     if (ball.y >= canvas.height) {
         ball = null;
         if (subtractLives())
-            isStart = false;
+            isFire = false;
         return;
     }
 
