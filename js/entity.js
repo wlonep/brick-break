@@ -1,3 +1,5 @@
+const breakSfx = new Audio("src/sfx/pling.mp3");
+
 const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400];
 const asteroidWidth = 100;
 const asteroidHeight = 100;
@@ -19,6 +21,13 @@ for (let i = 1; i <= 5; i++) {
 }
 
 let asteroids = [];
+
+
+function breakPlay() {
+    breakSfx.volume = localStorage.getItem("sfx-volume") / 100;
+    breakSfx.currentTime = 0;
+    breakSfx.play();
+}
 
 function createAsteroid(x){
     const spriteIndex = Math.floor(Math.random() * asteroidImages.length);
@@ -42,6 +51,7 @@ function updateAsteroid(){
 
         // 공 & 운석 충돌
         if (ball && isColliding(ball, asteroid)){
+            breakPlay();
             ball.vy *= -1; // 반사
             asteroids.splice(i, 1);
             continue;
@@ -50,7 +60,7 @@ function updateAsteroid(){
         // 바닥에 운석 충돌
         if (asteroid.y > canvas.height){
             asteroids.splice(i, 1);
-            //subtractLives();
+            subtractLives();
             return;
         }
     }
@@ -68,7 +78,7 @@ function updateEnemyShip() {
     }
 
     count++;
-    if (count == 100) {
+    if (count === 100) {
         enemyShipdx = directionChoices[Math.floor(Math.random() * directionChoices.length)];
         count = 0;
     }

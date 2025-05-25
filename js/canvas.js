@@ -2,7 +2,8 @@ const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
 
 let lives = 3;
-let isStart = false;
+let isFire = false;
+let isPlaying = false;
 
 let bgImg1 = new Image();
 let bgImg2 = new Image();
@@ -69,7 +70,7 @@ function drawBackground() {
         ctx.drawImage(bgImg2, 0, offsetY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
     }
 
-    if (stopScroll) return;
+    if (stopScroll || !isPlaying) return;
     scrollY += 0.5;
 
     const totalHeight = h1 + h2 - canvas.height;
@@ -85,16 +86,19 @@ function draw() {
     drawShipBar();
     drawShip();
     updateBall();
-    updateAsteroid();
-    updateEnemyShip();
-    drawBall();
-    drawAsteroids();
-    drawEnemyShip();
+    if(isPlaying) {
+        updateAsteroid();
+        updateEnemyShip();
+        drawBall();
+        drawAsteroids();
+        drawEnemyShip();
+    }
     requestAnimationFrame(draw);
 }
 
 function eventHandler() {
     $(canvas).on('mousemove', function (e) {
+        if (!isPlaying) return;
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
 
@@ -113,9 +117,9 @@ function eventHandler() {
     });
     $(canvas).on('mousedown', function (e) {
         e.preventDefault();
-        if (!isStart) {
+        if (!isFire && isPlaying) {
             fireBall();
-            isStart = true;
+            isFire = true;
         }
     });
 }
@@ -131,7 +135,9 @@ function finishGame() {
 }
 
 function defeat() {
-
+    isPlaying = false;
+    $("#status").html("GAME OVER").css("display", "block");
+    // todo: 메인메뉴, 다시 시작 버튼 추가
 }
 
 function victory() {
@@ -139,11 +145,26 @@ function victory() {
 }
 
 function startGame() {
-    // todo: 게임 시작 전 5초 카운트다운
     // todo: 점수, 목숨, 퍼즈 기능 추가
+
     initCanvas();
     eventHandler();
     draw();
+
+    let count = 6;
+    const countdown = setInterval(() => {
+        if (count > 1) {
+            $("#status").html(count - 1).css("display", "block");
+            count--;
+        } else if (count === 1) {
+            $("#status").html("GAME START").css("display", "block");
+            count--;
+        } else {
+            clearInterval(countdown);
+            $("#status").html("").css("display", "none");
+            isPlaying = true;
+        }
+    }, 1000);
 }
 
 function init_GameLevel(level) {
