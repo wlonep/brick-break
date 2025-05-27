@@ -45,7 +45,7 @@ function showStory(type, callback) {
     const storyData = type === "intro" ? introStory : endingStory;
     currentSlide = 0;
 
-    // localStorage 체크 (인트로 스토리 한 번만 표시) 테스트 때문에 주석 처리
+    // localStorage 체크 (인트로 스토리 한 번만 표시)
     // if (type === "intro" && localStorage.getItem("hasSeenIntroStory") === "true") {
     //     callback();
     //     return;
@@ -103,7 +103,9 @@ function displaySlide(storyData) {
     $("#story-content").html(`
         ${mediaHtml}
         <p>${slide.text}</p>
-    `).css("opacity", "0").animate({ opacity: "1" }, 500);
+    `);
+    // 텍스트에 페이드 인 효과 적용
+    $("#story-content p").css("opacity", "0").animate({ opacity: "1" }, 500);
 }
 
 window.showStory = showStory;
