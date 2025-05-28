@@ -6,7 +6,7 @@ window.onload = () => {
         .getUserMedia({audio: true})
         .then(() => playSound());
     changeBGM(localStorage.getItem("bgm") || "spring_walk");
-    updateBallPreview(localStorage.getItem("ballType") || "classic");
+    updateBallPreview(localStorage.getItem("ballType") || "blue");
     changeVolume("sfx-volume");
     changeShipColor();
 };
