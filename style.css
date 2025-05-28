@@ -58,7 +58,7 @@ h1 {
     left: 0;
 }
 
-#settings {
+#settings, #story {
     left: 100%;
     display: none;
 }
@@ -358,6 +358,84 @@ h3 {
     animation-delay: 0.5s;
 }
 
+/* 스토리 섹션 스타일 */
+#story {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.95);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+#story-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#story-content {
+    width: 100%;
+    height: 100%;
+    position: relative; /* 텍스트 오버레이를 위해 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-color);
+}
+
+#story-content img, #story-content video {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; /* 전체 화면 채우기 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#story-content p {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.6;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+    max-width: 90%;
+    z-index: 2; /* 미디어 위에 표시 */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#story-skip {
+    position: fixed;
+    top: 20px; /* 우측 상단으로 이동 */
+    right: 20px;
+    font-size: 18px;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DungGeunMo', sans-serif;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    z-index: 3;
+}
+
+#story-skip:hover {
+    color: var(--main-hover);
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
 #status {
     font-family: 'DungGeunMo', sans-serif;
     font-size: 70px;
@@ -372,3 +450,4 @@ h3 {
 #game-info {
     position: absolute;
 }
+

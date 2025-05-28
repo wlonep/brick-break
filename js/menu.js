@@ -132,14 +132,16 @@ function openCredit() {
 function openGame() {
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
-        $("#game")
-            .css({left: "20%", display: "block", opacity: "0"})
-            .animate({left: "0", opacity: "1"}, 300, function () {
-                //인게임은 가리고 레벨 메뉴부터 출력
-                $("#game-wrapper").hide();
-                $("#level_menu").css("display", "block");
-                planetHoverEvent();
-            });
+        showStory("intro", function () {
+            $("#game")
+                .css({left: "20%", display: "block", opacity: "0"})
+                .animate({left: "0", opacity: "1"}, 300, function () {
+                    //인게임은 가리고 레벨 메뉴부터 출력
+                    $("#game-wrapper").hide();
+                    $("#level_menu").css("display", "block");
+                    planetHoverEvent();
+                });
+        });
     });
 
     $(".level-btn").on("click", function () {
