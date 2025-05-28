@@ -1,5 +1,3 @@
-// todo: ball.js:77 Uncaught InvalidStateError: Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The HTMLImageElement provided is in the 'broken' state.
-
 const reflexSfx = new Audio("src/sfx/blop.mp3");
 
 function fireBall() {

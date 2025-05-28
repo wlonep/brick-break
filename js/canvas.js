@@ -15,7 +15,8 @@ bgImg2.onerror = () => {
 };
 
 const ballImg = new Image();
-ballImg.src = `src/ball/${localStorage.getItem("ballType")}.png` || 'src/ball/blue.png';
+const ballType = localStorage.getItem("ballType") || "blue";
+ballImg.src = `src/ball/${ballType}.png`;
 
 let scrollY = 0;
 let stopScroll = false;
@@ -177,7 +178,7 @@ function init_GameLevel(level) {
     //난이도 별 상대 우주선 색상 다르게 하는거로 했음
     enemyShipImg.src = `src/ship/enemy_${level}.png`;
 
-    enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요?
+    enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요? <-- 웬만하면 다른 파일에 넣는 게 나을 듯
     enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
     //게임 난이도, 블록 배치, 속도

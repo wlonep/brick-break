@@ -254,6 +254,7 @@ h3 {
 
 #credit > p > a {
     transition: 0.2s;
+    color: blue;
 }
 
 #credit > p > a:hover {
