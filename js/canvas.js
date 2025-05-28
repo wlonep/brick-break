@@ -1,6 +1,7 @@
 const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
-let lastTime = performance.now();  // draw 위쪽 전역 선언
+let lastTime = performance.now();
+let animationFrame = null;
 
 let level = 0;
 let lives = 5;
@@ -42,7 +43,7 @@ function initCanvas() {
     canvas.height = displayHeight;
 
     canvas.style.width = 500 + "px";
-    canvas.style.height = displayHeight - 20 + "px";
+    canvas.style.height = displayHeight - 65 + "px";
     shipY = canvas.height * 0.95 - shipHeight;
 
     bar.x = shipX;
@@ -89,7 +90,7 @@ function draw(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
-    drawShipBar();
+    /*drawShipBar();
     drawShip();
     updateBall(delta);
     if (isPlaying) {
@@ -98,8 +99,8 @@ function draw(timestamp) {
         drawBall();
         drawAsteroids();
         drawEnemyShip();
-    }
-    requestAnimationFrame(draw);
+    }*/
+    animationFrame = requestAnimationFrame(draw);
 }
 
 function eventHandler() {
@@ -142,21 +143,39 @@ function finishGame() {
 
 function defeat() {
     isPlaying = false;
-    const btnArea = $("<div/>").css({"display": "flex", "flex-direction": "row"});
+    const btnArea = $("<div id='status-btn-wrapper'/>");
     btnArea.append(
-        $("<button class='status-btn'>다시하기</button>"),
-        $("<button class='status-btn'>메인 메뉴로</button>")
+        $("<button class='status-btn'>YES</button>"),
+        $("<button class='status-btn'>NO</button>")
     );
-    $("#status").html("GAME OVER").css("display", "flex")
+    let countdown = 10;
+    $("#status").html("<h1 class='title'>GAME OVER</h1>").css("display", "flex")
+        .append("<div class='status-small'>CONTINUE?</div>")
         .append(btnArea).on("click", "button", function () {
+        clearInterval(timer);
+        $("#status-btn-wrapper").remove();
+        $("#status").off("click");
         resetGame();
-        if ($(this).text() === "다시하기") {
+        if ($(this).text() === "YES") {
             init_GameLevel(level)
         } else {
             goMenu();
         }
-    });
-    // todo: 메인메뉴, 다시 시작 버튼 추가
+    })
+        .append('<br/>')
+        .append(`<div class='status-small'>${countdown}</div>`);
+
+    const timer = setInterval(() => {
+        countdown--;
+        $(".status-small").last().text(countdown);
+        if (countdown < 0) {
+            clearInterval(timer);
+            $("#status-btn-wrapper").remove();
+            $("#status").off("click");
+            resetGame();
+            goMenu();
+        }
+    }, 1000);
 }
 
 function victory() {
@@ -184,11 +203,25 @@ function resetGame() {
 function startGame() {
     // todo: 점수, 목숨, 퍼즈 기능 추가
 
+    if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+
+    $("#game-info").append('<div id="health">목숨: </div><div id="score">점수: 0</div>');
+    for (let i = 0; i < lives; i++) {
+        const heart = new Image();
+        heart.src = "src/icons/heart.png";
+        $("#health").append(heart);
+    }
+
     initCanvas();
     eventHandler();
+    lastTime = performance.now();
     draw();
 
-    let count = 6;
+    isPlaying = true; // 디버깅용 - 카운트다운 삭제
+    /*let count = 6;
     const countdown = setInterval(() => {
         if (count > 1) {
             $("#status").html(count - 1).css("display", "block");
@@ -201,7 +234,7 @@ function startGame() {
             $("#status").html("").css("display", "none");
             isPlaying = true;
         }
-    }, 1000);
+    }, 1000);*/
 }
 
 function init_GameLevel(lv) {
@@ -209,7 +242,6 @@ function init_GameLevel(lv) {
     bgImg1.src = `src/background/stage_${level}_1.png`;
     bgImg2.src = `src/background/stage_${level}_2.png`;
 
-    //난이도 별 상대 우주선 색상 다르게 하는거로 했음
     enemyShipImg.src = `src/ship/enemy_${level}.png`;
 
     enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요? <-- 웬만하면 다른 파일에 넣는 게 나을 듯

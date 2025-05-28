@@ -12,7 +12,7 @@
 <div id="container">
     <section id="main-menu">
         <header>
-            <h1>벽돌깨기</h1>
+            <h1 class="title">Space Pioneer</h1>
         </header>
         <div id="menu">
             <button class="menu-btn" onclick="openGame()">게임시작</button>
@@ -22,7 +22,7 @@
     </section>
     <section id="game">
         <div id="level_menu">
-            <h1>탐사할 행성을 선택하세요</h1>
+            <h2>탐사할 행성을 선택하세요</h2>
             <div class="level-buttons">
                 <div class="planet-container">
                     <div class="planet-number">1</div>
@@ -44,10 +44,12 @@
             <button class="menu-btn" onclick="goMenu()">뒤로가기</button>
         </div>
         <div id="game-wrapper">
-            <!--<div id="game-info">
-                <div id="score">점수: 0</div>
-                <div id="time">남은 시간: </div>
-            </div>-->
+            <div id="game-info">
+                <div id="game-image">
+                    <img src="src/icons/pause.png"/>
+                    <img src="src/icons/tutorial.png"/>
+                </div>
+            </div>
             <div id="status"></div>
             <canvas id="game-canvas"></canvas>
             <script src="js/canvas.js"></script>
@@ -58,7 +60,7 @@
     </section>
     <section id="settings">
         <header>
-            <h1>환경설정</h1>
+            <h2>환경설정</h2>
         </header>
         <div id="settings-wrapper">
             <div class="settings-content">
@@ -110,7 +112,7 @@
         </div>
     </section>
     <section id="credit">
-        <h1>정보</h1>
+        <h2>정보</h2>
         <h3>개발자</h3>
         <p>202211305 박지원</p>
         <p>202211339 이어진</p>

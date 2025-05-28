@@ -4,13 +4,11 @@ function fireBall() {
     const centerX = shipX + shipWidth / 2;
     const centerY = shipY;
 
-    const speed = 2;
-
     ball = {
         x: centerX - ballSize / 2,
         y: centerY - ballSize / 2,
         vx: 0,           // x축 이동 없음
-        vy: -speed,      // 위쪽으로 고정 발사
+        vy: -1,      // 위쪽으로 고정 발사
         prevX: centerX - ballSize / 2,
         prevY: centerY - ballSize / 2
     };
@@ -25,7 +23,7 @@ function reflexPlay() {
 function updateBall(delta) {
     if (!ball) return;
 
-    const speed = 200;
+    const speed = 400;
 
     ball.prevX = ball.x;
     ball.prevY = ball.y;
@@ -37,6 +35,7 @@ function updateBall(delta) {
         ball.vx *= -1;
     }
     if (ball.y <= 0) {
+        ball.y = 0;
         ball.vy *= -1;
     }
 
