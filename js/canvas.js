@@ -2,7 +2,8 @@ const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
 let lastTime = performance.now();  // draw 위쪽 전역 선언
 
-let lives = 3;
+let level = 0;
+let lives = 5;
 let isFire = false;
 let isPlaying = false;
 
@@ -91,7 +92,7 @@ function draw(timestamp) {
     drawShipBar();
     drawShip();
     updateBall(delta);
-    if(isPlaying) {
+    if (isPlaying) {
         updateAsteroid();
         updateEnemyShip();
         drawBall();
@@ -141,7 +142,20 @@ function finishGame() {
 
 function defeat() {
     isPlaying = false;
-    $("#status").html("GAME OVER").css("display", "block");
+    const btnArea = $("<div/>").css({"display": "flex", "flex-direction": "row"});
+    btnArea.append(
+        $("<button class='status-btn'>다시하기</button>"),
+        $("<button class='status-btn'>메인 메뉴로</button>")
+    );
+    $("#status").html("GAME OVER").css("display", "flex")
+        .append(btnArea).on("click", "button", function () {
+        resetGame();
+        if ($(this).text() === "다시하기") {
+            init_GameLevel(level)
+        } else {
+            goMenu();
+        }
+    });
     // todo: 메인메뉴, 다시 시작 버튼 추가
 }
 
@@ -150,6 +164,21 @@ function victory() {
         alert("축하합니다! 게임을 클리어했습니다!");
         goMenu();
     });
+}
+
+function resetGame() {
+    lives = 5;
+    isFire = false;
+    isPlaying = false;
+    scrollY = 0;
+    stopScroll = false;
+    shipX = 0;
+    shipY = 0;
+    ball = null;
+    resetAsteroids();
+
+    initCanvas();
+    $("#status").html("").hide();
 }
 
 function startGame() {
@@ -175,7 +204,8 @@ function startGame() {
     }, 1000);
 }
 
-function init_GameLevel(level) {
+function init_GameLevel(lv) {
+    level = lv;
     bgImg1.src = `src/background/stage_${level}_1.png`;
     bgImg2.src = `src/background/stage_${level}_2.png`;
 

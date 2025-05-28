@@ -25,7 +25,7 @@ function reflexPlay() {
 function updateBall(delta) {
     if (!ball) return;
 
-    const speed = 300; // 픽셀/초 기준 속도 (원하는 값으로 조정 가능)
+    const speed = 200;
 
     ball.prevX = ball.x;
     ball.prevY = ball.y;

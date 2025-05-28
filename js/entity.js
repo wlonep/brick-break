@@ -22,6 +22,12 @@ for (let i = 1; i <= 5; i++) {
 
 let asteroids = [];
 
+function resetAsteroids() {
+    asteroids = [];
+    enemyShipInitialized = false;
+    enemyShipX = 0;
+    enemyShipY = 0;
+}
 
 function breakPlay() {
     breakSfx.volume = localStorage.getItem("sfx-volume") / 100;
