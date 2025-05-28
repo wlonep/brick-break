@@ -22,14 +22,16 @@ function reflexPlay() {
     reflexSfx.play();
 }
 
-function updateBall() {
+function updateBall(delta) {
     if (!ball) return;
+
+    const speed = 300; // 픽셀/초 기준 속도 (원하는 값으로 조정 가능)
 
     ball.prevX = ball.x;
     ball.prevY = ball.y;
 
-    ball.x += ball.vx;
-    ball.y += ball.vy;
+    ball.x += ball.vx * speed * delta;
+    ball.y += ball.vy * speed * delta;
 
     if (ball.x <= 0 || ball.x + ballSize >= canvas.width) {
         ball.vx *= -1;

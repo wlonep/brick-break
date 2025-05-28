@@ -1,5 +1,6 @@
 const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
+let lastTime = performance.now();  // draw 위쪽 전역 선언
 
 let lives = 3;
 let isFire = false;
@@ -81,12 +82,15 @@ function drawBackground() {
 }
 
 
-function draw() {
+function draw(timestamp) {
+    const delta = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
     drawShipBar();
     drawShip();
-    updateBall();
+    updateBall(delta);
     if(isPlaying) {
         updateAsteroid();
         updateEnemyShip();
