@@ -1,11 +1,11 @@
 let bgm;
 
 window.onload = () => {
-    bgm = new Audio("src/bgm/spring_walk.mp3");
+    bgm = new Audio("src/bgm/spaceship.mp3");
     navigator.mediaDevices
         .getUserMedia({audio: true})
         .then(() => playSound());
-    changeBGM(localStorage.getItem("bgm") || "spring_walk");
+    changeBGM(localStorage.getItem("bgm") || "spaceship");
     updateBallPreview(localStorage.getItem("ballType") || "blue");
     changeVolume("sfx-volume");
     changeShipColor();
