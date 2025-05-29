@@ -6,7 +6,7 @@ window.onload = () => {
         .getUserMedia({audio: true})
         .then(() => playSound());
     changeBGM(localStorage.getItem("bgm") || "spaceship");
-    updateBallPreview(localStorage.getItem("ballType") || "blue");
+    changeBall(localStorage.getItem("ballType") || "blue");
     changeVolume("sfx-volume");
     changeShipColor();
 };
@@ -25,26 +25,6 @@ function playSound() {
     changeVolume("volume");
 }
 
-function changeVolume(type, volume) {
-    if (!volume) volume = localStorage.getItem(type) || 30;
-    localStorage.setItem(type, volume);
-    const target = document.querySelector(`#${type}`);
-    const color = "#FF7875";
-    target.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${volume}%, #ddd ${volume}%, #ddd 100%)`;
-    if (type === "volume") {
-        bgm.volume = volume / 100;
-    }
-    target.value = volume;
-}
-
-function changeBGM(music) {
-    bgm.pause();
-    bgm = new Audio(`src/bgm/${music}.mp3`);
-    playSound();
-    document.querySelector("#sound").value = music;
-    localStorage.setItem("bgm", music);
-}
-
 function openSettings() {
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
@@ -52,6 +32,9 @@ function openSettings() {
             .css({left: "20%", display: "block", opacity: "0"})
             .animate({left: "0", opacity: "1"}, 300);
     });
+    $("#sound").val(localStorage.getItem("bgm"));
+    changeVolume('volume');
+    changeVolume('sfx-volume');
 }
 
 function clickButton() {
@@ -69,57 +52,6 @@ function goMenu() {
         .animate({left: "0%", opacity: "1"}, 300);
 }
 
-function updateBallPreview(type) {
-    let previewImage = new Image();
-    previewImage.src = `src/ball/${type}.png`;
-    previewImage.width = 20;
-    previewImage.height = 20;
-    $("#ball-preview").html(previewImage)
-    document.querySelector('#ball-select').value = type;
-    localStorage.setItem("ballType", type);
-}
-
-function changeShipColor() {
-    const saved_shipSrc = localStorage.getItem("shipColor");
-    if (saved_shipSrc) {
-        $(".ship-btn").each(function () {
-            let imgSrc = $(this).attr("src");
-            if (imgSrc === saved_shipSrc) {
-                $(this).css({
-                    'border-color': 'white',
-                    'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
-                })
-            }
-        })
-    }
-
-    $(".ship-btn")
-        .mouseenter(function () {
-            $(this).css({'cursor': 'pointer'})
-        })
-        .mouseleave(function () {
-            $(this).css({'cursor': 'default'})
-        })
-        .on("click", function () {
-            $(".ship-btn").css({
-                'border-color': 'none',
-                'box-shadow': 'none'
-            })
-            $(this).css({
-                'border-color': 'white',
-                'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
-            })
-
-            let shipSrc = $(this).attr("src");
-            localStorage.setItem("shipColor", shipSrc);
-
-            const shipChangedEvent = new CustomEvent('shipColorChanged', {
-                detail: {shipSrc: shipSrc}
-            })
-            document.dispatchEvent(shipChangedEvent)
-        })
-}
-
 function openCredit() {
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
@@ -132,22 +64,25 @@ function openCredit() {
 function openGame() {
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
-        showStory("intro", function () {
-            $("#game")
-                .css({left: "20%", display: "block", opacity: "0"})
-                .animate({left: "0", opacity: "1"}, 300, function () {
-                    //인게임은 가리고 레벨 메뉴부터 출력
-                    $("#game-wrapper").hide();
-                    $("#level_menu").css("display", "block");
-                    planetHoverEvent();
-                });
-        });
+        showStory("intro", openGameMenu);
     });
 
-    $(".level-btn").on("click", function () {
+    $(".level-btn").off("click").on("click", function () {
+        clickButton();
         let level = $(this).parent().index() + 1;
         startGame_Level(level);
     })
+}
+
+function openGameMenu() {
+    $("#game")
+        .css({left: "20%", display: "block", opacity: "0"})
+        .animate({left: "0", opacity: "1"}, 300, function () {
+            //인게임은 가리고 레벨 메뉴부터 출력
+            $("#game-wrapper").hide();
+            $("#level_menu").css("display", "block");
+            planetHoverEvent();
+        });
 }
 
 function startGame_Level(level) {

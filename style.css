@@ -1,7 +1,7 @@
 :root {
     --bg-gradient: black;
     --main-color: #FF4D4F;
-    --main-hover: #FF7875;
+    --main-hover: #238b45;
     --text-color: white;
     --title-color: #FFEB3B;
 }
@@ -120,6 +120,10 @@ footer {
     user-select: none;
     transition: 0.2s;
     outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .menu-btn:hover {
@@ -168,7 +172,7 @@ select {
     content: '';
     position: absolute;
     right: 5px;
-    top: 5px;
+    top: 4px;
     width: 20px;
     height: 20px;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>');
@@ -487,6 +491,7 @@ h3 {
     background: rgba(0, 0, 0, 0.75);
     width: 100%;
     height: 100%;
+    z-index: 5;
 }
 
 .status-small {
@@ -521,4 +526,38 @@ h3 {
 
 .status-btn:hover::before {
     opacity: 1;
+}
+
+#pause-wrapper {
+    display: flex;
+    gap: 25px;
+    font-size: 40px;
+}
+
+#pause-wrapper > i {
+    transition: 0.2s;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#pause-wrapper > i:hover {
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#resume-btn {
+    font-size: 45px;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    color: #FFEB3B;
+    transition: 0.2s;
+}
+
+#resume-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: color 0.2s;
+    color: var(--main-hover);
 }

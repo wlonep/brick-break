@@ -91,7 +91,6 @@ function draw(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
 
-    //어진: 여기 주석처리 돼있던데 테스트한다고 잠깐 풀었어용
     drawShipBar();
     drawShip();
     updateBall(delta);
@@ -123,7 +122,7 @@ function eventHandler() {
         // 바 위치 지정
         bar.x = newBarX;
 
-        // 우주선은 바의 중심에 위치
+        // 우주선 배치
         shipX = bar.x + (bar.width - shipWidth) / 2;
     });
     $(canvas).on('mousedown', function (e) {
@@ -139,10 +138,6 @@ function subtractLives() {
     lives--;
     if (lives === 0) return defeat();
     return true;
-}
-
-function finishGame() {
-
 }
 
 function defeat() {
@@ -212,7 +207,11 @@ function startGame() {
         animationFrame = null;
     }
 
-    $("#game-info").append('<div id="health">목숨: </div><div id="score">점수: 0</div>');
+    $("#game-info")
+        .html('<div id="pause-btn"><i class="fa-solid fa-pause"></i></div>')
+        .off('click', '#pause-btn > i')
+        .on('click', '#pause-btn > i', pauseGame)
+        .append('<div id="health">목숨: </div><div id="score">점수: 0</div>')
     for (let i = 0; i < lives; i++) {
         const heart = new Image();
         heart.src = "src/icons/heart.png";
@@ -223,22 +222,61 @@ function startGame() {
     eventHandler();
     lastTime = performance.now();
     draw();
+    startCountdown();
+}
 
-    isPlaying = true; // 디버깅용 - 카운트다운 삭제
-    /*let count = 6;
-    const countdown = setInterval(() => {
-        if (count > 1) {
-            $("#status").html(count - 1).css("display", "block");
+function pauseGame() {
+    clickButton();
+    isPlaying = false;
+    $("#pause-btn > i").removeClass("fa-pause").addClass("fa-play");
+
+    $("#status").html("<h1 class='title'>PAUSED</h1>").css("display", "flex")
+        .append('<div id="pause-wrapper">' +
+            '<i class="fa-solid fa-rotate-right"></i>' +
+            '<i class="fa-solid fa-list-ul"></i>' +
+            '<i class="fa-solid fa-gear"></i></div>' +
+            '<div id="resume-btn">RESUME</div>')
+        .off('click', '#pause-wrapper > i')
+        .on('click', '#pause-wrapper > i', function () {
+            clickButton();
+            const classes = this.classList;
+            if (classes.contains("fa-gear")) {
+                openPopupSettings();
+            } else if (classes.contains("fa-rotate-right")) {
+                resetGame();
+                init_GameLevel(level);
+            } else if (classes.contains("fa-list-ul")) {
+                resetGame();
+                openGameMenu();
+            }
+        })
+        .off('click', '#resume-btn')
+        .on('click', '#resume-btn', function () {
+            clickButton();
+            $("#pause-btn > i").removeClass("fa-play").addClass("fa-pause");
+            lastTime = performance.now();
+            startCountdown();
+        });
+}
+
+function startCountdown() {
+    let count = 5;
+    const countFunction = () => {
+        if (count > 0) {
+            $("#status").html(count).css("display", "flex");
             count--;
-        } else if (count === 1) {
-            $("#status").html("GAME START").css("display", "block");
+        } else if (count === 0) {
+            $("#status").html("GAME START").css("display", "flex");
             count--;
         } else {
             clearInterval(countdown);
             $("#status").html("").css("display", "none");
             isPlaying = true;
+            lastTime = performance.now();
         }
-    }, 1000);*/
+    }
+    countFunction();
+    const countdown = setInterval(countFunction, 1000);
 }
 
 function init_GameLevel(lv) {
