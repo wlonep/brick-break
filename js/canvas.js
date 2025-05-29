@@ -90,16 +90,20 @@ function draw(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
-    /*drawShipBar();
+
+    //어진: 여기 주석처리 돼있던데 테스트한다고 잠깐 풀었어용
+    drawShipBar();
     drawShip();
     updateBall(delta);
     if (isPlaying) {
         updateAsteroid();
+        updateItems(delta); 
         updateEnemyShip();
         drawBall();
         drawAsteroids();
+        drawItems();
         drawEnemyShip();
-    }*/
+    }
     animationFrame = requestAnimationFrame(draw);
 }
 
@@ -194,7 +198,7 @@ function resetGame() {
     shipX = 0;
     shipY = 0;
     ball = null;
-    resetAsteroids();
+    resetEntities();
 
     initCanvas();
     $("#status").html("").hide();
@@ -247,8 +251,8 @@ function init_GameLevel(lv) {
     enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요? <-- 웬만하면 다른 파일에 넣는 게 나을 듯
     enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
-    //게임 난이도, 블록 배치, 속도
-    //여기서 설정하고 게임시작하면 되지 않을까?
+    //어진: 여기서 게임 난이도, 블록 배치, 속도 
+    //설정하고 게임시작하면 되지 않을까?
 
     startGame();
 }
