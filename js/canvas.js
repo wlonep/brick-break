@@ -97,6 +97,7 @@ function draw(timestamp) {
     if (isPlaying) {
         updateAsteroidSpawn(delta);
         updateAsteroid();
+        updateEnemyShipInvincibility(delta);
         updateItems(delta); 
         updateEnemyShip();
         drawBall();
