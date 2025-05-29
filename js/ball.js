@@ -60,18 +60,7 @@ function updateBall(delta) {
         reflexPlay();
     }
 
-    if (enemyShipAlive && isBallHitEnemyShip(ball)) {
-        ball.vy *= -1;
-        reflexPlay();
-
-        if (enemyShipHP !== Infinity) {
-            enemyShipHP--;
-            if (enemyShipHP <= 0) {
-                enemyShipAlive = false;
-                //적 우주선 파괴효과 추가할거면 여기에
-            }
-        }
-    }
+    isBallHitEnemyShip(ball);
 
 }
 
