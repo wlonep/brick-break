@@ -1,5 +1,11 @@
 const breakSfx = new Audio("src/sfx/pling.mp3");
 
+//운석 최초 스폰 시점에 2개 이상 떨어지던 문제 수정
+let asteroidSpawnTimer = -1;  // START 후 1초 지연
+const asteroidSpawnInterval = 5; // 5초 간격
+
+const shrinkRatio = 0.8; // 적 우주선 & 운석 히트박스 비율 (0.8 = 이미지의 80%가 히트박스)
+
 const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400];
 const asteroidWidth = 100;
 const asteroidHeight = 100;
@@ -80,6 +86,20 @@ function createItem(x, y){
     });
 }
 
+function updateAsteroidSpawn(delta) {
+    if (!isPlaying) return;
+
+    asteroidSpawnTimer += delta;
+
+    if (asteroidSpawnTimer >= asteroidSpawnInterval) {
+        asteroidSpawnTimer = 0;
+
+        const randomIndex = Math.floor(Math.random() * fall_point.length);
+        createAsteroid(fall_point[randomIndex]);
+    }
+}
+
+
 function updateAsteroid(){
     for (let i = asteroids.length - 1 ; i >= 0 ; i--){
         const asteroid = asteroids[i];
@@ -87,16 +107,19 @@ function updateAsteroid(){
         asteroid.angle += asteroid.rotationSpeed; // 회전 업데이트
 
         // 공 & 운석 충돌
-        if (ball && isColliding(ball, asteroid)){
+        if (ball && isColliding(ball, asteroid)) {
+            const dir = getCollisionDirection(ball, asteroid);
+            if (dir === "left" || dir === "right") ball.vx *= -1;
+            else ball.vy *= -1;
+
             breakPlay();
-            ball.vy *= -1; // 반사
             asteroids.splice(i, 1);
 
-            if(Math.random()<itemDropChance){
+            if (Math.random() < itemDropChance) {
                 createItem(
-                    asteroid.x+asteroid.width/2 - itemWidth/2,
-                    asteroid.y+asteroid.height/2 - itemHeight/2
-                )
+                    asteroid.x + asteroid.width / 2 - itemWidth / 2,
+                    asteroid.y + asteroid.height / 2 - itemHeight / 2
+                );
             }
             continue;
         }
@@ -123,6 +146,7 @@ function updateItems(delta){
 
         //플레이어 바와 아이템 충돌
         //어진: 우주선이랑 충돌할 때 상호작용하도록 하는게 나을까요? 우주선이 막대때문에 좌우 끝까진 못가서 일단 막대로 했습니다.
+        //막대로 합시다 ㄱㄱ 너 말대로 우주선이 다 커버 못하기도 하고 난이도 너무 높을 듯
         if(itemHitsBar(item)){
             applyItemEffect(); //아이템을 먹었을때 동작하는 함수
             const itemSfx = new Audio("src/sfx/pling.mp3");
@@ -182,7 +206,6 @@ function isColliding(ball, asteroid){
 function isBallHitEnemyShip(ball) {
     if (!enemyShipAlive) return false;
 
-    const shrinkRatio = 0.8;
     const hitW = enemyShipWidth * shrinkRatio;
     const hitH = enemyShipHeight * shrinkRatio;
 
@@ -192,12 +215,34 @@ function isBallHitEnemyShip(ball) {
     const ballCx = ball.x + ballSize / 2;
     const ballCy = ball.y + ballSize / 2;
 
-    return (
+    const hit =
         ballCx > ex &&
         ballCx < ex + hitW &&
         ballCy > ey &&
-        ballCy < ey + hitH
-    );
+        ballCy < ey + hitH;
+
+    if (hit) {
+        const dir = getCollisionDirection(ball, {
+            x: enemyShipX,
+            y: enemyShipY,
+            width: enemyShipWidth,
+            height: enemyShipHeight
+        });
+
+        if (dir === "left" || dir === "right") ball.vx *= -1;
+        else ball.vy *= -1;
+
+        reflexPlay();
+
+        if (enemyShipHP !== Infinity) {
+            enemyShipHP--;
+            if (enemyShipHP <= 0) {
+                enemyShipAlive = false;
+            }
+        }
+    }
+
+    return hit;
 }
 
 function drawAsteroids(){
@@ -235,13 +280,22 @@ function drawItems(){
     }
 }
 
+function getCollisionDirection(ball, obj) {
+    const ballCx = ball.x + ballSize / 2;
+    const ballCy = ball.y + ballSize / 2;
+    const objCx = obj.x + obj.width / 2;
+    const objCy = obj.y + obj.height / 2;
+
+    const dx = ballCx - objCx;
+    const dy = ballCy - objCy;
+
+    return Math.abs(dx) > Math.abs(dy)
+        ? (dx > 0 ? "right" : "left")
+        : (dy > 0 ? "bottom" : "top");
+}
+
 function drawEnemyShip() {
     if (enemyShipAlive && enemyShipImg.complete) {
         ctx.drawImage(enemyShipImg, enemyShipX, enemyShipY, enemyShipWidth, enemyShipHeight);
     }
 }
-
-setInterval(() => {
-    const randomIndex = Math.floor(Math.random() * fall_point.length);
-    createAsteroid(fall_point[randomIndex]);
-}, 5000);
