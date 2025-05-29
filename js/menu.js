@@ -26,11 +26,12 @@ function playSound() {
 }
 
 function openSettings() {
-    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
+    stopBackgroundAnimation();
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 150, function () {
         $(this).hide();
         $("#settings")
             .css({left: "20%", display: "block", opacity: "0"})
-            .animate({left: "0", opacity: "1"}, 300);
+            .animate({left: "0", opacity: "1"}, 150);
     });
     $("#sound").val(localStorage.getItem("bgm"));
     changeVolume('volume');
@@ -44,25 +45,36 @@ function clickButton() {
 }
 
 function goMenu() {
-    $("section").not("#main-menu").animate({left: "30%", opacity: "0"}, 300, function () {
+    $("section").not("#main-menu").animate({left: "30%", opacity: "0"}, 150, function () {
         $(this).hide();
+        $("#main-menu")
+            .css({left: "-30%", display: "block", opacity: "0"})
+            .animate({left: "0%", opacity: "1"}, 150, function() {
+                startBackgroundAnimation();
+            });
     });
-    $("#main-menu")
-        .css({left: "-30%", display: "block", opacity: "0"})
-        .animate({left: "0%", opacity: "1"}, 300);
 }
 
 function openCredit() {
-    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
+    stopBackgroundAnimation();
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 150, function () {
         $(this).hide();
         $("#credit")
             .css({left: "20%", display: "block", opacity: "0"})
-            .animate({left: "0", opacity: "1"}, 300);
+            .animate({left: "0", opacity: "1"}, 150);
     });
 }
 
 function openGame() {
-    $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
+    // 소행성 제거
+    backgroundAsteroids = [];
+    const container = document.getElementById("asteroid-container");
+    if (container) {
+        container.innerHTML = "";
+    }
+
+    stopBackgroundAnimation();
+    $("#main-menu").animate({left: "-20%", opacity: "0"}, 150, function () {
         $(this).hide();
         showStory("intro", openGameMenu);
     });
@@ -71,14 +83,13 @@ function openGame() {
         clickButton();
         let level = $(this).parent().index() + 1;
         startGame_Level(level);
-    })
+    });
 }
 
 function openGameMenu() {
     $("#game")
         .css({left: "20%", display: "block", opacity: "0"})
-        .animate({left: "0", opacity: "1"}, 300, function () {
-            //인게임은 가리고 레벨 메뉴부터 출력
+        .animate({left: "0", opacity: "1"}, 150, function () {
             $("#game-wrapper").hide();
             $("#level_menu").css("display", "block");
             planetHoverEvent();
@@ -88,7 +99,7 @@ function openGameMenu() {
 function startGame_Level(level) {
     $("#level_menu").hide(300, function () {
         $("#game-wrapper").show(300, function () {
-            if (window.init_GameLevel) { //근데 전역함수 써도 됨? // ㅇㅇ
+            if (window.init_GameLevel) {
                 window.init_GameLevel(level);
             } else
                 alert("게임 호출 실패");

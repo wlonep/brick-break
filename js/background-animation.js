@@ -12,8 +12,8 @@ function initAsteroids() {
 
         backgroundAsteroids.push({
             id: `asteroid-${i}`,
-            scale: Math.random() * 0.8 + 0.2, // 0.2 ~ 1.0
-            speed: Math.random() * -(0.003) - 0.003, // -0.003 ~ -0.006, 반시계 방향
+            scale: Math.random() * 0.8 + 0.2,
+            speed: Math.random() * -(0.003) - 0.003,
             angle: Math.random() * 2 * Math.PI
         });
     }
@@ -54,7 +54,10 @@ function stopBackgroundAnimation() {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
         backgroundAsteroids = [];
-        document.getElementById("asteroid-container").innerHTML = "";
+        const container = document.getElementById("asteroid-container");
+        if (container) {
+            container.innerHTML = "";
+        }
     }
 }
 
