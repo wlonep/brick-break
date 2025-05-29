@@ -46,6 +46,7 @@ function changeBGM(music) {
 }
 
 function openSettings() {
+    stopBackgroundAnimation();
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
         $("#settings")
@@ -63,10 +64,12 @@ function clickButton() {
 function goMenu() {
     $("section").not("#main-menu").animate({left: "30%", opacity: "0"}, 300, function () {
         $(this).hide();
+        $("#main-menu")
+            .css({left: "-30%", display: "block", opacity: "0"})
+            .animate({left: "0%", opacity: "1"}, 300, function() {
+                startBackgroundAnimation();
+            });
     });
-    $("#main-menu")
-        .css({left: "-30%", display: "block", opacity: "0"})
-        .animate({left: "0%", opacity: "1"}, 300);
 }
 
 function updateBallPreview(type) {
@@ -121,6 +124,7 @@ function changeShipColor() {
 }
 
 function openCredit() {
+    stopBackgroundAnimation();
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
         $("#credit")
@@ -130,13 +134,13 @@ function openCredit() {
 }
 
 function openGame() {
+    stopBackgroundAnimation();
     $("#main-menu").animate({left: "-20%", opacity: "0"}, 300, function () {
         $(this).hide();
         showStory("intro", function () {
             $("#game")
                 .css({left: "20%", display: "block", opacity: "0"})
                 .animate({left: "0", opacity: "1"}, 300, function () {
-                    //인게임은 가리고 레벨 메뉴부터 출력
                     $("#game-wrapper").hide();
                     $("#level_menu").css("display", "block");
                     planetHoverEvent();
