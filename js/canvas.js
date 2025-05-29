@@ -261,6 +261,9 @@ function pauseGame() {
 }
 
 function startCountdown() {
+    bar.x = canvas.width / 2 - bar.width / 2;
+    shipX = bar.x + (bar.width - shipWidth) / 2;
+
     let count = 5;
     const countFunction = () => {
         if (count > 0) {
