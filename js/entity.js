@@ -130,7 +130,6 @@ function updateItems(delta){
             itemSfx.play();
 
             items.splice(i, 1);
-            continue;
         }
     }
 }
