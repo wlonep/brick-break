@@ -5,7 +5,9 @@
     <title>벽돌깨기 | PA#2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/e094af0263.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/menu.js"></script>
 </head>
 <body>
@@ -21,7 +23,7 @@
         <div id="menu">
             <button class="menu-btn" onclick="openGame()">게임시작</button>
             <button class="menu-btn" onclick="openSettings()">환경설정</button>
-            <button class="menu-btn" onclick="openCredit()">정보</button>
+            <button class="menu-btn" onclick="openCredit()">크레딧</button>
         </div>
     </section>
     <section id="game">
@@ -48,12 +50,7 @@
             <button class="menu-btn" onclick="goMenu()">뒤로가기</button>
         </div>
         <div id="game-wrapper">
-            <div id="game-info">
-                <div id="game-image">
-                    <img src="src/icons/pause.png"/>
-                    <img src="src/icons/tutorial.png"/>
-                </div>
-            </div>
+            <div id="game-info"></div>
             <div id="status"></div>
             <canvas id="game-canvas"></canvas>
             <script src="js/canvas.js"></script>
@@ -84,7 +81,7 @@
                 <input type="range" id="volume" min="0" max="100" value="30"
                        onchange="changeVolume('volume', this.value)"
                        oninput="changeVolume('volume', this.value)">
-            </div>            
+            </div>
             <div class="settings-content">
                 <label for="sfx-volume">효과음 음량:</label>
                 <input type="range" id="sfx-volume" min="0" max="100" value="30"
@@ -95,7 +92,7 @@
                 <label for="ball-select">공 선택:</label>
                 <div class="ball-selector">
                     <div class="select-wrapper">
-                        <select id="ball-select" onchange="updateBallPreview(this.value)">
+                        <select id="ball-select" onchange="changeBall(this.value)">
                             <option value="blue">양성자</option>
                             <option value="green">플라즈마</option>
                             <option value="red">쿼크</option>
@@ -107,16 +104,16 @@
             <div class="settings-content">
                 <label>우주선 선택:</label>
                 <div class="ship-selector">
-                    <img class="ship-btn" src="src/ship/ship_blue.png" alt="Blue ship">
-                    <img class="ship-btn" src="src/ship/ship_green.png" alt="Blue ship">
-                    <img class="ship-btn" src="src/ship/ship_red.png" alt="Blue ship">
+                    <img class="ship-btn" src="src/ship/ship_blue.png" alt="ship">
+                    <img class="ship-btn" src="src/ship/ship_green.png" alt="ship">
+                    <img class="ship-btn" src="src/ship/ship_red.png" alt="ship">
                 </div>
             </div>
             <button class="menu-btn" onclick="goMenu()">뒤로가기</button>
         </div>
     </section>
     <section id="credit">
-        <h2>정보</h2>
+        <h2>크레딧</h2>
         <h3>개발자</h3>
         <p>202211305 박지원</p>
         <p>202211339 이어진</p>
