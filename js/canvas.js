@@ -5,7 +5,6 @@ let animationFrame = null;
 
 let level = 0;
 let lives = 5;
-let isFire = false;
 let isPlaying = false;
 
 let bgImg1 = new Image();
@@ -129,15 +128,20 @@ function eventHandler() {
     });
     $(canvas).on('mousedown', function (e) {
         e.preventDefault();
-        if (!isFire && isPlaying) {
+        if (isPlaying) {
             fireBall();
-            isFire = true;
         }
     });
 }
 
 function subtractLives() {
     lives--;
+    $("#health").empty().append("목숨: ");
+    for (let i = 0; i < lives; i++) {
+        const heart = new Image();
+        heart.src = "src/icons/heart.png";
+        $("#health").append(heart);
+    }
     if (lives === 0) return defeat();
     return true;
 }
@@ -187,14 +191,24 @@ function victory() {
 }
 
 function resetGame() {
+    if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+
     lives = 5;
-    isFire = false;
+    $("#health").empty().append("목숨: ");
+    for (let i = 0; i < lives; i++) {
+        const heart = new Image();
+        heart.src = "src/icons/heart.png";
+        $("#health").append(heart);
+    }
     isPlaying = false;
     scrollY = 0;
     stopScroll = false;
     shipX = 0;
     shipY = 0;
-    ball = null;
+    balls = []; // 배열로 변경
     resetEntities();
 
     initCanvas();
