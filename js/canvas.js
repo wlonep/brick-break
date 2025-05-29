@@ -95,6 +95,7 @@ function draw(timestamp) {
     drawShip();
     updateBall(delta);
     if (isPlaying) {
+        updateAsteroidSpawn(delta);
         updateAsteroid();
         updateItems(delta); 
         updateEnemyShip();
@@ -260,6 +261,9 @@ function pauseGame() {
 }
 
 function startCountdown() {
+    bar.x = canvas.width / 2 - bar.width / 2;
+    shipX = bar.x + (bar.width - shipWidth) / 2;
+
     let count = 5;
     const countFunction = () => {
         if (count > 0) {
@@ -281,16 +285,18 @@ function startCountdown() {
 
 function init_GameLevel(lv) {
     level = lv;
+
     bgImg1.src = `src/background/stage_${level}_1.png`;
     bgImg2.src = `src/background/stage_${level}_2.png`;
 
+    // 적 우주선 에셋 종류 설정
     enemyShipImg.src = `src/ship/enemy_${level}.png`;
-
-    enemyShipY = canvas.height * 0.1;   //이거 여따쓰면 많이 별로인가요? <-- 웬만하면 다른 파일에 넣는 게 나을 듯
+    enemyShipY = canvas.height * 0.1;
     enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
-    //어진: 여기서 게임 난이도, 블록 배치, 속도 
-    //설정하고 게임시작하면 되지 않을까?
+    // 적 우주선 체력
+    enemyShipHP = (level === 1) ? 3 : (level === 2) ? 5 : (level === 3) ? 7 : Infinity;
+    enemyShipAlive = true;
 
     startGame();
 }
