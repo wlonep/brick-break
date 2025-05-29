@@ -12,8 +12,10 @@ const enemyShipWidth = 64;
 const enemyShipHeight = 64;
 const enemyShipSpeed = 1;
 let enemyShipInitialized = false;
+let enemyShipHP = Infinity;
+let enemyShipAlive = true;
 
-const itemTypes = ['ammo', 'energy', 'health', 'rockets']; 
+const itemTypes = ['ammo', 'energy', 'health', 'rockets'];
 //어진: 아이템 종류는 정한게 없어서 일단 icon 에셋 파일에 있는걸로 사용할게
 //아래는 대충 예시고, 구현 편한 기능으로 효과 넣으면 될 듯??
 //ammo: 공 한개 더 발사가능? / energy: 공 관통력 +1 / health: 목숨 +1 / rocket: n초동안 공 속도 증가?
@@ -108,7 +110,7 @@ function updateAsteroid(){
     }
 }
 
-function updateItems(delta){ 
+function updateItems(delta){
     for(let i = items.length-1; i>=0; i--){
         const item = items[i];
         item.y+=itemSpeed*delta;
@@ -178,6 +180,27 @@ function isColliding(ball, asteroid){
     );
 }
 
+function isBallHitEnemyShip(ball) {
+    if (!enemyShipAlive) return false;
+
+    const shrinkRatio = 0.8;
+    const hitW = enemyShipWidth * shrinkRatio;
+    const hitH = enemyShipHeight * shrinkRatio;
+
+    const ex = enemyShipX + (enemyShipWidth - hitW) / 2;
+    const ey = enemyShipY + (enemyShipHeight - hitH) / 2;
+
+    const ballCx = ball.x + ballSize / 2;
+    const ballCy = ball.y + ballSize / 2;
+
+    return (
+        ballCx > ex &&
+        ballCx < ex + hitW &&
+        ballCy > ey &&
+        ballCy < ey + hitH
+    );
+}
+
 function drawAsteroids(){
     for (const asteroid of asteroids) {
         if (!asteroid.img || !asteroid.img.complete) continue;
@@ -202,7 +225,7 @@ function drawAsteroids(){
 function drawItems(){
     for(const item of items){
         if (!item.img || !item.img.complete) continue;
-        
+
         ctx.drawImage(
             item.img,
             item.x,
@@ -214,7 +237,7 @@ function drawItems(){
 }
 
 function drawEnemyShip() {
-    if (enemyShipImg.complete) {
+    if (enemyShipAlive && enemyShipImg.complete) {
         ctx.drawImage(enemyShipImg, enemyShipX, enemyShipY, enemyShipWidth, enemyShipHeight);
     }
 }
