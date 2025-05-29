@@ -13,17 +13,33 @@ const enemyShipHeight = 64;
 const enemyShipSpeed = 1;
 let enemyShipInitialized = false;
 
-const asteroidImages = [];
+const itemTypes = ['ammo', 'energy', 'health', 'rockets']; 
+//어진: 아이템 종류는 정한게 없어서 일단 icon 에셋 파일에 있는걸로 사용할게
+//아래는 대충 예시고, 구현 편한 기능으로 효과 넣으면 될 듯??
+//ammo: 공 한개 더 발사가능? / energy: 공 관통력 +1 / health: 목숨 +1 / rocket: n초동안 공 속도 증가?
+const itemWidth = 30;
+const itemHeight = 30;
+const itemSpeed = 100;
+const itemDropChance = 1;
+
+const asteroidImages = []; //행성 이미지 배열
 for (let i = 1; i <= 5; i++) {
     const img = new Image();
     img.src = `src/asteroid/asteroid_${i}.png`;
     asteroidImages.push(img);
 }
+const itemImages = {}; //아이템 이미지 객체
+itemTypes.forEach(type=>{
+    itemImages[type] = new Image();
+    itemImages[type].src = `src/icons/${type}.png`;
+})
 
-let asteroids = [];
+let asteroids = []; //현재 화면에 표시된 행성들 배열
+let items = []; //현재 화면에 표시되는 아이템들 배열
 
-function resetAsteroids() {
+function resetEntities() {
     asteroids = [];
+    items=[];
     enemyShipInitialized = false;
     enemyShipX = 0;
     enemyShipY = 0;
@@ -49,6 +65,19 @@ function createAsteroid(x){
     });
 }
 
+function createItem(x, y){
+    const randomType = itemTypes[Math.floor(Math.random()*itemTypes.length)];
+
+    items.push({
+        x: x,
+        y: y,
+        width: itemWidth,
+        height: itemHeight,
+        type: randomType,
+        img: itemImages[randomType],
+    });
+}
+
 function updateAsteroid(){
     for (let i = asteroids.length - 1 ; i >= 0 ; i--){
         const asteroid = asteroids[i];
@@ -60,6 +89,13 @@ function updateAsteroid(){
             breakPlay();
             ball.vy *= -1; // 반사
             asteroids.splice(i, 1);
+
+            if(Math.random()<itemDropChance){
+                createItem(
+                    asteroid.x+asteroid.width/2 - itemWidth/2,
+                    asteroid.y+asteroid.height/2 - itemHeight/2
+                )
+            }
             continue;
         }
 
@@ -70,6 +106,42 @@ function updateAsteroid(){
             return;
         }
     }
+}
+
+function updateItems(delta){ 
+    for(let i = items.length-1; i>=0; i--){
+        const item = items[i];
+        item.y+=itemSpeed*delta;
+
+        //바닥에 아이템 충돌
+        if(item.y > canvas.height){
+            items.splice(i, 1);
+            continue;
+        }
+
+        //플레이어 바와 아이템 충돌
+        //어진: 우주선이랑 충돌할 때 상호작용하도록 하는게 나을까요? 우주선이 막대때문에 좌우 끝까진 못가서 일단 막대로 했습니다.
+        if(itemHitsBar(item)){
+            applyItemEffect(); //아이템을 먹었을때 동작하는 함수
+            const itemSfx = new Audio("src/sfx/pling.mp3");
+            itemSfx.volume = localStorage.getItem("sfx-volume") / 100
+            itemSfx.play();
+
+            items.splice(i, 1);
+            continue;
+        }
+    }
+}
+
+function itemHitsBar(item){
+    return (
+        (item.x < bar.x+bar.width && item.x + item.width > bar.x) &&
+        (item.y < bar.y + bar.height && item.y + item.height > bar.y)
+    )
+}
+function applyItemEffect(){
+    //어진: 여기에 아이템 효과 함수들 작성하면 됩니다.
+    console.log("아이템을 먹었습니다.");
 }
 
 const directionChoices = [-enemyShipSpeed, 0, enemyShipSpeed];
@@ -124,6 +196,20 @@ function drawAsteroids(){
             asteroid.height
         );
         ctx.restore();
+    }
+}
+
+function drawItems(){
+    for(const item of items){
+        if (!item.img || !item.img.complete) continue;
+        
+        ctx.drawImage(
+            item.img,
+            item.x,
+            item.y,
+            item.width,
+            item.height
+        )
     }
 }
 
