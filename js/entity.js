@@ -171,6 +171,9 @@ function itemHitsBar(item){
 }
 function applyItemEffect(item) {
     console.log(`아이템 효과 발동: ${item.type}`); // 디버깅 로그 추가
+
+    showItemEffect(item.type);
+
     switch (item.type) {
         case 'ammo':
             maxBalls = Math.min(maxBalls + 1, 10);
@@ -200,6 +203,41 @@ function applyItemEffect(item) {
             console.log("rocket 아이템 발동"); // 디버깅 로그 추가
             break;
     }
+}
+
+function showItemEffect(itemType){
+    let message = "";
+    let className = "";
+
+    switch(itemType){
+        case 'ammo':
+            message = `탄알 획득!<br/>공 개수+1(최대10) (현재 개수: ${maxBalls}개)`;
+            className = "ammo-effect";
+            break;
+
+        case 'energy':
+            message = "에너지 획득!<br/>공 속도 증가 (10초)";
+            className = "energy-effect";
+            break;
+
+        case 'health':
+            message = "라이프 획득!<br/>목숨 +1 (최대 5)";
+            className = "health-effect";
+            break;
+
+        case 'rocket':
+            message = "로켓 획득!<br/>모든 운석 파괴";
+            className = "rocket-effect";
+            break;
+    }
+    $(`#item-status .item-effect`).remove();
+
+    const itemEffect = $(`
+        <div class="item-effect ${className}">
+            <img src="src/icons/${itemType}.png" alt="${itemType}" width="24" height="24"/>
+            <span>${message}</span>
+        </div>
+    `).appendTo("#item-status");
 }
 
 const directionChoices = [-enemyShipSpeed, 0, enemyShipSpeed];

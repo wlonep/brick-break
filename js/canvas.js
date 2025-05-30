@@ -228,6 +228,7 @@ function startGame() {
         .off('click', '#pause-btn > i')
         .on('click', '#pause-btn > i', pauseGame)
         .append('<div id="health">목숨: </div><div id="score">점수: 0</div>')
+        .append('<br/><br/><div id="item-status"></div>');
     for (let i = 0; i < lives; i++) {
         const heart = new Image();
         heart.src = "src/icons/heart.png";
