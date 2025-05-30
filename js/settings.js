@@ -5,7 +5,9 @@ function changeShipColor() {
             let imgSrc = $(this).attr("src");
             if (imgSrc === saved_shipSrc) {
                 $(this).css({
-                    'border-color': 'white',
+                    //'border-color': 'white',
+                    'border' : '1px solid white',
+                    'border-radius' : '5px',
                     'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
                 })
             }
@@ -22,11 +24,14 @@ function changeShipColor() {
         .on("click", function () {
             clickButton();
             $(".ship-btn").css({
-                'border-color': 'none',
+                //'border-color': 'none',
+                'border' : 'none',
                 'box-shadow': 'none'
             })
             $(this).css({
-                'border-color': 'white',
+                //'border-color': 'white',
+                'border' : '1px solid white',
+                'border-radius' : '5px',
                 'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
             })
 

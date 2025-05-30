@@ -90,7 +90,7 @@ function openGameMenu() {
     $("#game")
         .css({left: "20%", display: "block", opacity: "0"})
         .animate({left: "0", opacity: "1"}, 150, function () {
-            $("#game-wrapper").hide();
+            //$("#game-wrapper").hide();
             $("#level_menu").css("display", "block");
             planetHoverEvent();
         });
@@ -108,7 +108,14 @@ function startGame_Level(level) {
 }
 
 function planetHoverEvent() {
+    let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
+    let level_name = ['Earth', 'Star', 'Gas Giant', 'BlackHole'];
+    let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
+
     $(".level-btn").mouseenter(function () {
+        let level_Index = $(this).parent().index();
+        let parent = $(this).parent();
+
         $(this).css({
             'transform': 'scale(1.05) translateY(-5px)',
             'cursor': 'pointer'
@@ -116,6 +123,15 @@ function planetHoverEvent() {
         $(this).prev().css({
             'transform': 'scale(1.05) translateY(-5px)'
         })
+        if(parent.find(".level-class").length ===0){
+            const descript_Div = $("<div/>");
+            descript_Div
+                .addClass("level-class")
+                .html(`Asteroid: <strong> ${level_name[level_Index]}</strong><br/>
+                    Difficulty: <strong style="color: ${levelColors[level_Index]}">${levels[level_Index]}<strong/>`)
+                .appendTo(parent);
+        }
+
     }).mouseleave(function () {
         $(this).css({
             'transform': 'scale(1.0) translateY(5px)',
@@ -124,5 +140,6 @@ function planetHoverEvent() {
         $(this).prev().css({
             'transform': 'scale(1.0) translateY(5px)'
         })
+        $(this).parent().find(".level-class").remove();
     })
 }

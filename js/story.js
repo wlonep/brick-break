@@ -16,7 +16,7 @@ const introStory = [
         media: { type: "image", src: "src/story/occupied_planet.png" }
     },
     {
-        text: "지금, 은하계를 구하기 위한 전투가 시작됩니다. 준비되셨습니까, 사령관?",
+        text: "지금, 은하계를 구하기 위한 전투가 시작됩니다.<br>준비되셨습니까, 사령관?",
         media: { type: "video", src: "src/story/battle_start.mp4", autoplay: true }
     }
 ];
