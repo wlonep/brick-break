@@ -109,7 +109,7 @@ function startGame_Level(level) {
 
 function planetHoverEvent() {
     let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
-    let level_name = ['Earth', 'Star', 'Gas Giant', 'BlackHole'];
+    let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
     $(".level-btn").mouseenter(function () {
@@ -127,7 +127,7 @@ function planetHoverEvent() {
             const descript_Div = $("<div/>");
             descript_Div
                 .addClass("level-class")
-                .html(`Asteroid: <strong> ${level_name[level_Index]}</strong><br/>
+                .html(`Planet: <strong> ${level_name[level_Index]}</strong><br/>
                     Difficulty: <strong style="color: ${levelColors[level_Index]}">${levels[level_Index]}<strong/>`)
                 .appendTo(parent);
         }
