@@ -6,6 +6,7 @@ let animationFrame = null;
 let level = 0;
 let lives = 5;
 let isPlaying = false;
+let score = 0;
 
 let bgImg1 = new Image();
 let bgImg2 = new Image();
@@ -16,18 +17,12 @@ bgImg2.onerror = () => {
     bgImg2.src = "src/background/callback.png";
 };
 
-const ballImg = new Image();
-const ballType = localStorage.getItem("ballType") || "blue";
-ballImg.src = `src/ball/${ballType}.png`;
-
 let scrollY = 0;
 let stopScroll = false;
 let shipX = 0;
 let shipY = 0;
 const shipWidth = 64;
 const shipHeight = 64;
-const ballSize = 16;
-let ball = null;
 const bar = {
     width: shipWidth * 2,
     height: 12, // 8 -> 12
@@ -84,6 +79,11 @@ function drawBackground() {
 
 
 function draw(timestamp) {
+    if (stopScroll && !enemyShipAlive && asteroids.length === 0 && lives > 0) {
+        isPlaying = false;
+        return victory();
+    }
+
     const delta = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
 
@@ -97,7 +97,7 @@ function draw(timestamp) {
         updateAsteroidSpawn(delta);
         updateAsteroid();
         updateEnemyShipInvincibility(delta);
-        updateItems(delta); 
+        updateItems(delta);
         updateEnemyShip();
         drawBall();
         drawAsteroids();
@@ -136,14 +136,19 @@ function eventHandler() {
 
 function subtractLives() {
     lives--;
-    $("#health").empty().append("목숨: ");
+    displayLives();
+    if (lives === 0) return defeat();
+    return true;
+}
+
+function displayLives() {
+    const health = $("#health");
+    health.empty().append("목숨: ");
     for (let i = 0; i < lives; i++) {
         const heart = new Image();
         heart.src = "src/icons/heart.png";
-        $("#health").append(heart);
+        health.append(heart);
     }
-    if (lives === 0) return defeat();
-    return true;
 }
 
 function defeat() {
@@ -154,8 +159,10 @@ function defeat() {
         $("<button class='status-btn'>NO</button>")
     );
     let countdown = 10;
-    $("#status").html("<h1 class='title'>GAME OVER</h1>").css("display", "flex")
-        .append("<div class='status-small'>CONTINUE?</div>")
+    $("#status")
+        .html("<h1 class='title'>GAME OVER</h1>").css("display", "flex")
+        .append(`<div class='status-small'>점수: ${score}</div>`)
+        .append("<div class='status-small'>REPLAY?</div>")
         .append(btnArea).on("click", "button", function () {
         clearInterval(timer);
         $("#status-btn-wrapper").remove();
@@ -197,12 +204,11 @@ function resetGame() {
     }
 
     lives = 5;
-    $("#health").empty().append("목숨: ");
-    for (let i = 0; i < lives; i++) {
-        const heart = new Image();
-        heart.src = "src/icons/heart.png";
-        $("#health").append(heart);
+    displayLives();
+    if (localStorage.getItem(`level-${level}-score`) < score) {
+        localStorage.setItem(`level-${level}-score`, score);
     }
+    score = 0;
     isPlaying = false;
     scrollY = 0;
     stopScroll = false;
@@ -215,6 +221,8 @@ function resetGame() {
 
     initCanvas();
     $("#status").html("").hide();
+    $("#game-info").html("").hide();
+    $("#game-wrapper").hide();
 }
 
 function startGame() {
@@ -225,7 +233,7 @@ function startGame() {
         animationFrame = null;
     }
 
-    $("#game-info")
+    $("#game-info").css({"display": "flex"})
         .html('<div id="pause-btn"><i class="fa-solid fa-pause"></i></div>')
         .off('click', '#pause-btn > i')
         .on('click', '#pause-btn > i', pauseGame)
@@ -301,7 +309,13 @@ function startCountdown() {
     const countdown = setInterval(countFunction, 1000);
 }
 
+function addScore(point) {
+    score += point;
+    $("#score").text(`점수: ${score}`)
+}
+
 function init_GameLevel(lv) {
+    $("#game-wrapper").show();
     level = lv;
 
     bgImg1.src = `src/background/stage_${level}_1.png`;

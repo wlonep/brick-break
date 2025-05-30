@@ -26,14 +26,6 @@ let enemyShipInvincible = false;
 let enemyShipInvincibleTimer = 0;
 const enemyShipInvincibleDuration = 1; // 3초
 
-const itemTypes = ['ammo', 'energy', 'health', 'rocket'];
-//어진: 아이템 종류는 정한게 없어서 일단 icon 에셋 파일에 있는걸로 사용할게
-//아래는 대충 예시고, 구현 편한 기능으로 효과 넣으면 될 듯??
-//ammo: 공 한개 더 발사가능 / energy: 10초간 공 속도 증가 (1.4배)/ health: 목숨 +1 / rocket: 화면 내 있는 운석 모두 파괴
-const itemWidth = 30;
-const itemHeight = 30;
-const itemSpeed = 100;
-const itemDropChance = 1;
 
 const asteroidImages = [];
 for (let i = 1; i <= 5; i++) {
@@ -42,14 +34,7 @@ for (let i = 1; i <= 5; i++) {
     asteroidImages.push(img);
 }
 
-const itemImages = {};
-itemTypes.forEach(type => {
-    itemImages[type] = new Image();
-    itemImages[type].src = `src/icons/${type}.png`; // 수정
-});
-
 let asteroids = [];
-let items = [];
 
 function resetEntities() {
     asteroids = [];
@@ -79,25 +64,11 @@ function createAsteroid(x) {
     });
 }
 
-function createItem(x, y) {
-    const randomType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-    console.log(`아이템 드랍 : ${randomType}`); // 디버깅 로그 추가
-
-    items.push({
-        x: x,
-        y: y,
-        width: itemWidth,
-        height: itemHeight,
-        type: randomType,
-        img: itemImages[randomType],
-    });
-}
-
 function updateAsteroidSpawn(delta) {
     if (!isPlaying) return;
     asteroidSpawnTimer += delta;
 
-    if (asteroidSpawnTimer >= asteroidSpawnInterval) {
+    if (asteroidSpawnTimer >= asteroidSpawnInterval && (enemyShipAlive || !stopScroll)) {
         asteroidSpawnTimer = 0;
         const randomIndex = Math.floor(Math.random() * fall_point.length);
         createAsteroid(fall_point[randomIndex]);
@@ -132,6 +103,7 @@ function updateAsteroid() {
                 }
 
                 breakPlay();
+                addScore(50);
                 asteroids.splice(i, 1);
 
                 if (Math.random() < itemDropChance) {
@@ -150,105 +122,6 @@ function updateAsteroid() {
             return;
         }
     }
-}
-
-function updateItems(delta){
-    for(let i = items.length-1; i>=0; i--){
-        const item = items[i];
-        item.y+=itemSpeed*delta;
-
-        //바닥에 아이템 충돌
-        if(item.y > canvas.height){
-            items.splice(i, 1);
-            continue;
-        }
-
-        //플레이어 바와 아이템 충돌
-        //어진: 우주선이랑 충돌할 때 상호작용하도록 하는게 나을까요? 우주선이 막대때문에 좌우 끝까진 못가서 일단 막대로 했습니다.
-        //막대로 합시다 ㄱㄱ 너 말대로 우주선이 다 커버 못하기도 하고 난이도 너무 높을 듯
-        if(itemHitsBar(item)){
-            applyItemEffect(item); //아이템을 먹었을때 동작하는 함수
-            const itemSfx = new Audio("src/sfx/pling.mp3");
-            itemSfx.volume = localStorage.getItem("sfx-volume") / 100
-            itemSfx.play();
-
-            items.splice(i, 1);
-        }
-    }
-}
-
-function itemHitsBar(item){
-    return (
-        (item.x < bar.x+bar.width && item.x + item.width > bar.x) &&
-        (item.y < bar.y + bar.height && item.y + item.height > bar.y)
-    )
-}
-function applyItemEffect(item) {
-
-    showItemEffect(item.type);
-
-    switch (item.type) {
-        case 'ammo':
-            maxBalls = Math.min(maxBalls + 1, 4); // 공 최대 4개까지 가능
-            break;
-        case 'energy':
-            if (speedMultiplier === 1) {
-                speedMultiplier = 1.2; // 최대 속도는 기본 속도의 1.2배
-                setTimeout(() => {
-                    speedMultiplier = 1;
-                }, 10000);
-            }
-            break;
-        case 'health':
-            if (lives < 5) {
-                lives++;
-                $("#health").empty().append("목숨: ");
-                for (let i = 0; i < lives; i++) {
-                    const heart = new Image();
-                    heart.src = "src/icons/heart.png";
-                    $("#health").append(heart);
-                }
-            }
-            break;
-        case 'rocket':
-            asteroids = [];
-            break;
-    }
-}
-
-function showItemEffect(itemType){
-    let message = "";
-    let className = "";
-
-    switch(itemType){
-        case 'ammo':
-            message = `탄알 획득!<br/>공 개수+1(최대4) (현재 개수: ${maxBalls}개)`;
-            className = "ammo-effect";
-            break;
-
-        case 'energy':
-            message = "에너지 획득!<br/>공 속도 증가 (10초)";
-            className = "energy-effect";
-            break;
-
-        case 'health':
-            message = "라이프 획득!<br/>목숨 +1 (최대 5)";
-            className = "health-effect";
-            break;
-
-        case 'rocket':
-            message = "로켓 획득!<br/>모든 운석 파괴";
-            className = "rocket-effect";
-            break;
-    }
-    $(`#item-status .item-effect`).remove();
-
-    const itemEffect = $(`
-        <div class="item-effect ${className}">
-            <img src="src/icons/${itemType}.png" alt="${itemType}" width="24" height="24"/>
-            <span>${message}</span>
-        </div>
-    `).appendTo("#item-status");
 }
 
 const directionChoices = [-enemyShipSpeed, 0, enemyShipSpeed];
@@ -318,8 +191,10 @@ function isBallHitEnemyShip(ball) {
     if (enemyShipHP !== Infinity) {
         enemyShipHP--;
         if (enemyShipHP <= 0) {
+            addScore(500);
             enemyShipAlive = false;
         } else {
+            addScore(100);
             enemyShipInvincible = true;
             enemyShipInvincibleTimer = enemyShipInvincibleDuration;
         }
@@ -354,14 +229,6 @@ function drawAsteroids() {
             asteroid.height
         );
         ctx.restore();
-    }
-}
-
-function drawItems() {
-    for (const item of items) {
-        if (!item.img || !item.img.complete) continue;
-
-        ctx.drawImage(item.img, item.x, item.y, item.width, item.height);
     }
 }
 

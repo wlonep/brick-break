@@ -1,4 +1,8 @@
 const reflexSfx = new Audio("src/sfx/blop.mp3");
+const ballImg = new Image();
+const ballType = localStorage.getItem("ballType") || "blue";
+ballImg.src = `src/ball/${ballType}.png`;
+const ballSize = 16;
 
 let balls = []; // 배열로 변경
 let maxBalls = 1; // 최대 발사 가능 공 개수, 초기값 1
@@ -22,7 +26,7 @@ function fireBall() {
 function reflexPlay() {
     reflexSfx.volume = localStorage.getItem("sfx-volume") / 100;
     reflexSfx.currentTime = 0;
-    reflexSfx.play();
+    reflexSfx.play().then();
 }
 
 function updateBall(delta) {
@@ -48,7 +52,9 @@ function updateBall(delta) {
 
         if (ball.y >= canvas.height) {
             balls.splice(i, 1);
-            subtractLives(); // isFire 제거
+            if (balls.length === 0) {
+                subtractLives();
+            }
             continue;
         }
 

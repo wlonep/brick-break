@@ -102,7 +102,6 @@ footer {
 }
 
 .menu-btn {
-    margin: 0 auto;
     width: 150px;
     height: 50px;
     line-height: 50px;
@@ -119,8 +118,8 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
-    /* gap: 10px; */
+    margin: 10px auto 0;
+    gap: 10px;
 }
 
 .menu-btn:hover {
@@ -296,7 +295,6 @@ h3 {
     position: fixed;
     top: 60px;
     left: calc(50% - 500px);
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
@@ -320,14 +318,13 @@ h3 {
     height: 3000px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    border: 2px solid white;
 }
 
 #level_menu {
     margin-top: 10%;
 }
 
-#level_menu > h2{
+#level_menu > h2 {
     margin-bottom: 5%;
 }
 
@@ -367,11 +364,11 @@ h3 {
     transition: transform 0.3s ease;
     cursor: pointer;
 } */
- .level-class{
+.level-class {
     position: absolute;
     display: block;
-    bottom: -55px;
-    width:100%;
+    bottom: -65px;
+    width: 100%;
     text-align: center;
     min-height: 50px;
     line-height: 1.5;
@@ -381,34 +378,38 @@ h3 {
     font-family: 'DungGeunMo', sans-serif;
 }
 
-.level-back-btn{
-    margin-top: 70px;  
+.level-back-btn {
+    margin-top: 70px;
 }
 
-.planet-container:nth-child(1) .level-btn{
+.planet-container:nth-child(1) .level-btn {
     width: 150px;
     height: 150px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
-.planet-container:nth-child(2) .level-btn{
+
+.planet-container:nth-child(2) .level-btn {
     width: 300px;
     height: 300px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
-.planet-container:nth-child(3) .level-btn{
+
+.planet-container:nth-child(3) .level-btn {
     width: 400px;
     height: 400px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
-.planet-container:nth-child(4) .level-btn{
+
+.planet-container:nth-child(4) .level-btn {
     width: 350px;
     height: 350px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
+
 @keyframes float {
     0% {
         transform: translateY(0);
@@ -620,7 +621,7 @@ h3 {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('src/menubackground/blue.png');
+    background-image: url('src/menu/blue.png');
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -637,11 +638,21 @@ h3 {
 }
 
 @keyframes star-shimmer {
-    0% { transform: translateX(0) translateY(0); }
-    25% { transform: translateX(-10px) translateY(5px); }
-    50% { transform: translateX(0) translateY(0); }
-    75% { transform: translateX(10px) translateY(-5px); }
-    100% { transform: translateX(0) translateY(0); }
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+    25% {
+        transform: translateX(-10px) translateY(5px);
+    }
+    50% {
+        transform: translateX(0) translateY(0);
+    }
+    75% {
+        transform: translateX(10px) translateY(-5px);
+    }
+    100% {
+        transform: translateX(0) translateY(0);
+    }
 }
 
 #asteroid-container {
@@ -675,6 +686,7 @@ h3 {
     border-radius: 8px;
     margin-bottom: 5px;
     text-align: left;
+    padding: 10px 20px;
 }
 
 .item-effect span {

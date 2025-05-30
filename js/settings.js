@@ -1,20 +1,20 @@
 function changeShipColor() {
     const saved_shipSrc = localStorage.getItem("shipColor");
+    const shipBtn = $(".ship-btn")
     if (saved_shipSrc) {
-        $(".ship-btn").each(function () {
+        shipBtn.each(function () {
             let imgSrc = $(this).attr("src");
             if (imgSrc === saved_shipSrc) {
                 $(this).css({
                     //'border-color': 'white',
-                    'border' : '1px solid white',
-                    'border-radius' : '5px',
+                    'border': '1px solid white',
+                    'border-radius': '5px',
                     'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
                 })
             }
         })
     }
-
-    $(".ship-btn")
+    shipBtn
         .mouseenter(function () {
             $(this).css({'cursor': 'pointer'})
         })
@@ -23,15 +23,15 @@ function changeShipColor() {
         })
         .on("click", function () {
             clickButton();
-            $(".ship-btn").css({
+            shipBtn.css({
                 //'border-color': 'none',
-                'border' : 'none',
+                'border': 'none',
                 'box-shadow': 'none'
             })
             $(this).css({
                 //'border-color': 'white',
-                'border' : '1px solid white',
-                'border-radius' : '5px',
+                'border': '1px solid white',
+                'border-radius': '5px',
                 'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
             })
 
