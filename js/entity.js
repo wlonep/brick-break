@@ -113,9 +113,23 @@ function updateAsteroid() {
         for (let j = balls.length - 1; j >= 0; j--) {
             const ball = balls[j];
             if (ball && isColliding(ball, asteroid)) {
+                // 충돌 방향 계산 (이동 방향 기준)
                 const dir = getCollisionDirection(ball, asteroid);
-                if (dir === "left" || dir === "right") ball.vx *= -1;
-                else ball.vy *= -1;
+
+                // 공의 위치 보정 (충돌 지점으로 이동)
+                if (dir === "left") {
+                    ball.x = asteroid.x - ballSize;
+                    ball.vx *= -1;
+                } else if (dir === "right") {
+                    ball.x = asteroid.x + asteroid.width;
+                    ball.vx *= -1;
+                } else if (dir === "top") {
+                    ball.y = asteroid.y - ballSize;
+                    ball.vy *= -1;
+                } else if (dir === "bottom") {
+                    ball.y = asteroid.y + asteroid.height;
+                    ball.vy *= -1;
+                }
 
                 breakPlay();
                 asteroids.splice(i, 1);
@@ -126,7 +140,7 @@ function updateAsteroid() {
                         asteroid.y + asteroid.height / 2 - itemHeight / 2
                     );
                 }
-                break;
+                break; // 해당 공의 처리 종료
             }
         }
 
@@ -170,18 +184,16 @@ function itemHitsBar(item){
     )
 }
 function applyItemEffect(item) {
-    console.log(`아이템 효과 발동: ${item.type}`); // 디버깅 로그 추가
 
     showItemEffect(item.type);
 
     switch (item.type) {
         case 'ammo':
-            maxBalls = Math.min(maxBalls + 1, 10);
-            console.log(`공 발사 수 +1 : ${maxBalls}`); // 디버깅 로그 추가
+            maxBalls = Math.min(maxBalls + 1, 4); // 공 최대 4개까지 가능
             break;
         case 'energy':
             if (speedMultiplier === 1) {
-                speedMultiplier = 1.4;
+                speedMultiplier = 1.2; // 최대 속도는 기본 속도의 1.2배
                 setTimeout(() => {
                     speedMultiplier = 1;
                 }, 10000);
@@ -200,7 +212,6 @@ function applyItemEffect(item) {
             break;
         case 'rocket':
             asteroids = [];
-            console.log("rocket 아이템 발동"); // 디버깅 로그 추가
             break;
     }
 }
@@ -211,7 +222,7 @@ function showItemEffect(itemType){
 
     switch(itemType){
         case 'ammo':
-            message = `탄알 획득!<br/>공 개수+1(최대10) (현재 개수: ${maxBalls}개)`;
+            message = `탄알 획득!<br/>공 개수+1(최대4) (현재 개수: ${maxBalls}개)`;
             className = "ammo-effect";
             break;
 
@@ -355,17 +366,38 @@ function drawItems() {
 }
 
 function getCollisionDirection(ball, obj) {
+    // 공의 이동 방향을 기준으로 충돌 방향 판단
+    const dx = ball.x - ball.prevX;
+    const dy = ball.y - ball.prevY;
+
+    // 공의 중심 위치
     const ballCx = ball.x + ballSize / 2;
     const ballCy = ball.y + ballSize / 2;
+    const objLeft = obj.x;
+    const objRight = obj.x + obj.width;
+    const objTop = obj.y;
+    const objBottom = obj.y + obj.height;
+
+    // 이동 방향과 충돌 지점을 기준으로 방향 결정
+    if (dx > 0 && ballCx >= objLeft && ball.prevX + ballSize / 2 < objLeft) {
+        return "left"; // 오른쪽으로 이동 중, 운석 왼쪽 면 충돌
+    } else if (dx < 0 && ballCx <= objRight && ball.prevX + ballSize / 2 > objRight) {
+        return "right"; // 왼쪽으로 이동 중, 운석 오른쪽 면 충돌
+    } else if (dy > 0 && ballCy >= objTop && ball.prevY + ballSize / 2 < objTop) {
+        return "top"; // 아래로 이동 중, 운석 윗면 충돌
+    } else if (dy < 0 && ballCy <= objBottom && ball.prevY + ballSize / 2 > objBottom) {
+        return "bottom"; // 위로 이동 중, 운석 아랫면 충돌
+    }
+
+    // 기본적으로 현재 위치 기준으로 판단 (보조적)
     const objCx = obj.x + obj.width / 2;
     const objCy = obj.y + obj.height / 2;
+    const dxPos = ballCx - objCx;
+    const dyPos = ballCy - objCy;
 
-    const dx = ballCx - objCx;
-    const dy = ballCy - objCy;
-
-    return Math.abs(dx) > Math.abs(dy)
-        ? (dx > 0 ? "right" : "left")
-        : (dy > 0 ? "bottom" : "top");
+    return Math.abs(dxPos) > Math.abs(dyPos)
+        ? (dxPos > 0 ? "right" : "left")
+        : (dyPos > 0 ? "bottom" : "top");
 }
 
 function drawEnemyShip() {

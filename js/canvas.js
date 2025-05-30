@@ -30,7 +30,7 @@ const ballSize = 16;
 let ball = null;
 const bar = {
     width: shipWidth * 2,
-    height: 8,
+    height: 12, // 8 -> 12
     x: 0,
     y: 0
 };
@@ -209,6 +209,8 @@ function resetGame() {
     shipX = 0;
     shipY = 0;
     balls = []; // 배열로 변경
+    maxBalls = 1; // maxBalls 초기화
+    speedMultiplier = 1; // speedMultiplier 초기화
     resetEntities();
 
     initCanvas();
