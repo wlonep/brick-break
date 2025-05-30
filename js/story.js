@@ -57,7 +57,7 @@ function showStory(type, callback) {
     // 스킵 버튼
     $("#story-skip").off("click").on("click", function () {
         clearInterval(storyInterval);
-        $("#story").animate({ left: "100%", opacity: "0" }, 300, function () {
+        $("#story").animate({ left: "-100%", opacity: "0" }, 300, function () {
             $(this).hide();
             if (type === "intro") {
                 localStorage.setItem("hasSeenIntroStory", "true");

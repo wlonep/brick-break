@@ -5,7 +5,7 @@ function initAsteroids() {
     const container = document.getElementById("asteroid-container");
     for (let i = 0; i < 10; i++) {
         const img = document.createElement("img");
-        img.src = `src/menubackground/back_asteroid-${(i % 2) + 1}.png`;
+        img.src = `src/menu/back_asteroid-${(i % 2) + 1}.png`;
         img.className = "asteroid";
         img.id = `asteroid-${i}`;
         container.appendChild(img);

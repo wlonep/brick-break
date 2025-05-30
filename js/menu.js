@@ -90,19 +90,16 @@ function openGameMenu() {
     $("#game")
         .css({left: "20%", display: "block", opacity: "0"})
         .animate({left: "0", opacity: "1"}, 150, function () {
-            //$("#game-wrapper").hide();
             $("#level_menu").css("display", "block");
             planetHoverEvent();
         });
 }
 
 function startGame_Level(level) {
-    $("#level_menu").hide(300, function () {
-        $("#game-wrapper").show(300, function () {
-            if (window.init_GameLevel) {
-                window.init_GameLevel(level);
-            } else
-                alert("게임 호출 실패");
+    $("#level_menu").fadeOut(300, function () {
+        $("#game-wrapper").fadeIn(300, function () {
+            window.init_GameLevel(level);
+            $("#game-canvas").css({"border": "2px solid white"})
         });
     });
 }
@@ -113,7 +110,7 @@ function planetHoverEvent() {
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
     $(".level-btn").mouseenter(function () {
-        let level_Index = $(this).parent().index();
+        let levelIndex = $(this).parent().index();
         let parent = $(this).parent();
 
         $(this).css({
@@ -127,8 +124,9 @@ function planetHoverEvent() {
             const descript_Div = $("<div/>");
             descript_Div
                 .addClass("level-class")
-                .html(`Planet: <strong> ${level_name[level_Index]}</strong><br/>
-                    Difficulty: <strong style="color: ${levelColors[level_Index]}">${levels[level_Index]}<strong/>`)
+                .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
+                    Planet: <strong> ${level_name[levelIndex]}</strong><br/>
+                    Difficulty: <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}<strong/>`)
                 .appendTo(parent);
         }
 
