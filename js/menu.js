@@ -148,12 +148,10 @@ function showStageInfo(level, planet_img){
 
                 //버튼 이벤트 설정
                 $("#start_stage").off('click').on('click', function(){
-                    clickButton();
                     hideStageInfo();
                     startGame_Level(level);
                 })
                 $("#back_to_select").off('click').on('click', function(){
-                    clickButton();
                     hideStageInfo();
                     resetPlanetSelection();
                 })
@@ -198,9 +196,8 @@ function planetHoverEvent() {
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
-    $(".level-btn").off('mouseenter mouseleave');
-
-    $(".level-btn").mouseenter(function () {
+    $(".level-btn").off('mouseenter mouseleave')
+        .mouseenter(function () {
         let levelIndex = $(this).parent().index();
         let parent = $(this).parent();
 
