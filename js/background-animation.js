@@ -7,7 +7,7 @@ function initAsteroids() {
     // 소행성 8개 생성
     for (let i = 0; i < 8; i++) {
         const img = document.createElement("img");
-        img.src = `src/menu/back_asteroid-${(i % 2) + 1}.png`;
+        img.src = `src/menu/back_asteroid-${i + 1}.png`;
         img.className = "asteroid";
         img.id = `asteroid-${i}`;
         container.appendChild(img);
@@ -18,7 +18,7 @@ function initAsteroids() {
             width: 100, // 고정 크기 추가
             height: 100,
             scale: Math.random() * 0.8 + 0.2, // 0.2 ~ 1.0
-            speed: Math.random() * -(0.003) - 0.003, // -0.003 ~ -0.006, 반시계 방향
+            speed: Math.random() * -(0.003) - 0.0003, // -0.003 ~ -0.006, 반시계 방향
             angle: Math.random() * 2 * Math.PI
         });
     }
