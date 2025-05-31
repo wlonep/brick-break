@@ -102,9 +102,9 @@ function showStageInfo(level, planet_img){
     const originalRect = planet_img[0].getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();
-    
+
     // 목표 위치 계산 (화면의 좌측 하단)
-    const targetLeft = windowWidth * 0.05; 
+    const targetLeft = windowWidth * 0.05;
     const targetTop = windowHeight * 0.8;
 
     // 이미지의 중심점 계산
@@ -157,7 +157,7 @@ function showStageInfo(level, planet_img){
                 })
             })
 
-    });    
+    });
 }
 
 function hideStageInfo() {
@@ -229,4 +229,14 @@ function planetHoverEvent() {
         })
         $(this).parent().find(".level-class").remove();
     })
+}
+
+function clearProgress() {
+    clickButton();
+    // localStorage의 클리어 상태와 점수 초기화
+    for (let i = 1; i <= 4; i++) {
+        localStorage.removeItem(`level-${i}-cleared`);
+        localStorage.removeItem(`level-${i}-score`);
+    }
+    alert("진행 상태가 초기화되었습니다!");
 }

@@ -25,10 +25,20 @@ const shipWidth = 64;
 const shipHeight = 64;
 const bar = {
     width: shipWidth * 2,
-    height: 12, // 8 -> 12
+    height: 12,
     x: 0,
     y: 0
 };
+
+// 치트 키 (테스트용)
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.shiftKey && event.key === 'C') {
+        stopScroll = true;
+        enemyShipAlive = false;
+        asteroids = [];
+        console.log("Cheat activated: Stage cleared!");
+    }
+});
 
 function initCanvas() {
     const displayHeight = $(window).height();
@@ -52,18 +62,13 @@ function drawBackground() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // case 1: scrollY < h1 → stage_1 보여주기
     if (scrollY < h1) {
         ctx.drawImage(bgImg1, 0, scrollY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-
-        // stage_2가 곧 들어올 경우, 겹쳐서 미리 그려주기
         if (scrollY + canvas.height > h1) {
             const remaining = scrollY + canvas.height - h1;
             ctx.drawImage(bgImg2, 0, 0, canvas.width, remaining, 0, canvas.height - remaining, canvas.width, remaining);
         }
-    }
-    // case 2: scrollY >= h1 → stage_2 전면
-    else {
+    } else {
         const offsetY = scrollY - h1;
         ctx.drawImage(bgImg2, 0, offsetY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
     }
@@ -76,7 +81,6 @@ function drawBackground() {
         stopScroll = true;
     }
 }
-
 
 function draw(timestamp) {
     if (stopScroll && !enemyShipAlive && asteroids.length === 0 && lives > 0) {
@@ -113,17 +117,12 @@ function eventHandler() {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
 
-        // 마우스를 bar 중심에 맞춤
         let newBarX = mouseX - bar.width / 2;
 
-        // 경계 제한
         if (newBarX < 0) newBarX = 0;
         if (newBarX + bar.width > canvas.width) newBarX = canvas.width - bar.width;
 
-        // 바 위치 지정
         bar.x = newBarX;
-
-        // 우주선 배치
         shipX = bar.x + (bar.width - shipWidth) / 2;
     });
     $(canvas).on('mousedown', function (e) {
@@ -153,27 +152,36 @@ function displayLives() {
 
 function defeat() {
     isPlaying = false;
+
+    // #status 캐싱 및 초기화
+    const $status = $("#status")
+        .removeClass("scoreboard") // 점수판 스타일 제거
+        .removeAttr("style") // 모든 인라인 스타일 제거
+        .html("");
+
     const btnArea = $("<div id='status-btn-wrapper'/>");
     btnArea.append(
         $("<button class='status-btn'>YES</button>"),
         $("<button class='status-btn'>NO</button>")
     );
     let countdown = 10;
-    $("#status")
-        .html("<h1 class='title'>GAME OVER</h1>").css("display", "flex")
+    $status
+        .html("<h1 class='title'>GAME OVER</h1>")
+        .css("display", "flex")
         .append(`<div class='status-small'>점수: ${score}</div>`)
         .append("<div class='status-small'>REPLAY?</div>")
-        .append(btnArea).on("click", "button", function () {
-        clearInterval(timer);
-        $("#status-btn-wrapper").remove();
-        $("#status").off("click");
-        resetGame();
-        if ($(this).text() === "YES") {
-            init_GameLevel(level)
-        } else {
-            goMenu();
-        }
-    })
+        .append(btnArea)
+        .on("click", "button", function () {
+            clearInterval(timer);
+            $("#status-btn-wrapper").remove();
+            $status.off("click");
+            resetGame();
+            if ($(this).text() === "YES") {
+                init_GameLevel(level);
+            } else {
+                goMenu();
+            }
+        })
         .append('<br/>')
         .append(`<div class='status-small'>${countdown}</div>`);
 
@@ -183,7 +191,7 @@ function defeat() {
         if (countdown < 0) {
             clearInterval(timer);
             $("#status-btn-wrapper").remove();
-            $("#status").off("click");
+            $status.off("click");
             resetGame();
             goMenu();
         }
@@ -191,11 +199,74 @@ function defeat() {
 }
 
 function victory() {
+    // 현재 레벨 클리어 상태 저장
+    localStorage.setItem(`level-${level}-cleared`, "true");
+
+    // 현재 점수 저장
+    const finalScore = score;
+
+    // 레벨 1, 2, 3 모두 클리어 여부 확인
+    const allCleared =
+        localStorage.getItem("level-1-cleared") === "true" &&
+        localStorage.getItem("level-2-cleared") === "true" &&
+        localStorage.getItem("level-3-cleared") === "true";
+
+    // #status 캐싱
+    const $status = $("#status");
+
+    // #status를 #game-wrapper 외부로 이동
+    $status.appendTo("#game");
+
+    // resetGame 호출
     resetGame();
-    showStory("ending", function () {
-        alert("축하합니다! 게임을 클리어했습니다!");
-        goMenu();
-    });
+
+    // 점수판 표시 함수 정의
+    function showScoreboard() {
+        const btnArea = $("<div id='status-btn-wrapper'/>");
+        const isLevel4 = level === 4;
+
+        if (!isLevel4) {
+            const message = level === 3 ? "무한 모드로 가시겠습니까?" : "다음 단계로 가시겠습니까?";
+            const yesText = level === 3 ? "예(무한 모드)" : "예(다음 단계)";
+            btnArea.append(
+                $("<button class='status-btn'></button>").text(yesText).on("click", function () {
+                    // #status를 원래 위치로 복원 및 내용 제거
+                    $status.appendTo("#game-wrapper").html("").hide();
+                    const nextLevel = level === 3 ? 4 : level + 1;
+                    init_GameLevel(nextLevel);
+                })
+            );
+        }
+
+        btnArea.append(
+            $("<button class='status-btn'>단계 선택</button>").on("click", function () {
+                // #status를 원래 위치로 복원 및 내용 제거
+                $status.appendTo("#game-wrapper").html("").hide();
+                openGameMenu();
+            })
+        );
+
+        setTimeout(() => {
+            $status
+                .removeAttr("style") // 모든 인라인 스타일 제거
+                .removeClass() // 기존 클래스 제거
+                .addClass("scoreboard") // 칠판 스타일 클래스 적용
+                .html(`<h1 class='title'>레벨 ${level} 클리어!</h1>`)
+                .css("display", "flex")
+                .append(`<div class='status-small'>점수: ${finalScore}</div>`)
+                .append(`<div class='status-small'>최고 점수: ${localStorage.getItem(`level-${level}-score`) || 0}</div>`)
+                .append(btnArea);
+        }, 500);
+    }
+
+    // 모든 레벨 클리어 시 엔딩 스토리 표시 후 점수판 표시
+    if (allCleared && level === 3) {
+        setTimeout(() => {
+            showStory("ending", showScoreboard);
+        }, 1000);
+    } else {
+        showScoreboard();
+    }
 }
 
 function resetGame() {
@@ -215,24 +286,27 @@ function resetGame() {
     stopScroll = false;
     shipX = 0;
     shipY = 0;
-    balls = []; // 배열로 변경
-    maxBalls = 1; // maxBalls 초기화
-    speedMultiplier = 1; // speedMultiplier 초기화
+    balls = [];
+    maxBalls = 1;
+    speedMultiplier = 1;
     resetEntities();
 
     initCanvas();
-    $("#status").html("").hide();
     $("#game-info").html("").hide();
     $("#game-wrapper").hide();
 }
 
 function startGame() {
-    // todo: 점수, 목숨, 퍼즈 기능 추가
-
     if (animationFrame) {
         cancelAnimationFrame(animationFrame);
         animationFrame = null;
     }
+
+    // #status 초기화
+    $("#status")
+        .removeClass("scoreboard") // 점수판 스타일 제거
+        .removeAttr("style") // 모든 인라인 스타일 제거
+        .html("");
 
     $("#game-info").css({"display": "flex"})
         .html('<div id="pause-btn"><i class="fa-solid fa-pause"></i></div>')
@@ -312,7 +386,7 @@ function startCountdown() {
 
 function addScore(point) {
     score += point;
-    $("#score").text(`점수: ${score}`)
+    $("#score").text(`점수: ${score}`);
 }
 
 function init_GameLevel(lv) {
@@ -322,12 +396,10 @@ function init_GameLevel(lv) {
     bgImg1.src = `src/background/stage_${level}_1.png`;
     bgImg2.src = `src/background/stage_${level}_2.png`;
 
-    // 적 우주선 에셋 종류 설정
     enemyShipImg.src = `src/ship/enemy_${level}.png`;
     enemyShipY = canvas.height * 0.1;
     enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
-    // 적 우주선 체력
     enemyShipHP = (level === 1) ? 3 : (level === 2) ? 5 : (level === 3) ? 7 : Infinity;
     enemyShipAlive = true;
 
@@ -336,5 +408,3 @@ function init_GameLevel(lv) {
 
 $(window).on('resize', () => initCanvas());
 window.init_GameLevel = init_GameLevel;
-
-

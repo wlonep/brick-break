@@ -45,12 +45,6 @@ function showStory(type, callback) {
     const storyData = type === "intro" ? introStory : endingStory;
     currentSlide = 0;
 
-    // localStorage 체크 (인트로 스토리 한 번만 표시)
-    // if (type === "intro" && localStorage.getItem("hasSeenIntroStory") === "true") {
-    //     callback();
-    //     return;
-    // }
-
     $("#story").css({ left: "100%", display: "block" }).animate({ left: "0%", opacity: "1" }, 300);
     displaySlide(storyData);
 
@@ -63,7 +57,7 @@ function showStory(type, callback) {
                 localStorage.setItem("hasSeenIntroStory", "true");
                 callback();
             } else {
-                goMenu();
+                callback(); // 엔딩 스토리 스킵 시 점수판 표시로 연결
             }
         });
     });
@@ -79,13 +73,13 @@ function showStory(type, callback) {
                     localStorage.setItem("hasSeenIntroStory", "true");
                     callback();
                 } else {
-                    goMenu();
+                    callback(); // 엔딩 스토리 완료 시 점수판 표시로 연결
                 }
             });
         } else {
             displaySlide(storyData);
         }
-    }, 4000); // 4초마다 슬라이드 전환
+    }, 4000);
 }
 
 function displaySlide(storyData) {
