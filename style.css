@@ -264,6 +264,10 @@ h3 {
     margin-bottom: 10px;
 }
 
+#credit {
+    margin-top: 50px;
+}
+
 #credit > p {
     font-size: 20px;
     color: var(--text-color);
@@ -272,7 +276,7 @@ h3 {
 
 #credit > p > a {
     transition: 0.2s;
-    color: blue;
+    color: lightblue;
 }
 
 #credit > p > a:hover {
@@ -818,14 +822,37 @@ h3 {
     margin-top: 20px;
 }
 
-#status.scoreboard .status-btn {
-    font-size: 20px;
-    padding: 10px 20px;
-    background: #FF4D4F;
-    border-radius: 5px;
-    cursor: pointer;
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    25% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
-#status.scoreboard .status-btn:hover {
-    background: #238b45;
+.blink {
+    animation: blink 0.3s ease-in-out 0s 2;
+}
+
+.popup {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1002;
+    display: none; /* 기본적으로 숨김 */
 }

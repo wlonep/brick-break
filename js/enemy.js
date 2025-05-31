@@ -26,7 +26,7 @@ let enemyShipInvincible = false;
 let enemyShipInvincibleTimer = 0;
 const enemyShipInvincibleDuration = 1;
 
-const enemyLasers = [];
+let enemyLasers = [];
 const enemyLaserSpeed = 250; // 레이저 속도 조절(공이 지금 400임)
 let enemyLaserTimer = 0;
 const enemyLaserImg = new Image();
@@ -49,12 +49,13 @@ function resetEntities() {
     enemyShipInitialized = false;
     enemyShipX = 0;
     enemyShipY = 0;
+    enemyLasers = [];
 }
 
 function breakPlay() {
     breakSfx.volume = localStorage.getItem("sfx-volume") / 100;
     breakSfx.currentTime = 0;
-    breakSfx.play();
+    breakSfx.play().then();
 }
 
 function createAsteroid(x) {
@@ -93,9 +94,10 @@ function updateAsteroid() {
         for (let j = balls.length - 1; j >= 0; j--) {
             const ball = balls[j];
             if (ball && isColliding(ball, asteroid)) {
+                spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
+
                 // 충돌 방향 계산 (이동 방향 기준)
                 const dir = getCollisionDirection(ball, asteroid);
-
                 // 공의 위치 보정 (충돌 지점으로 이동)
                 if (dir === "left") {
                     ball.x = asteroid.x - ballSize;
@@ -188,25 +190,32 @@ function isBallHitEnemyShip(ball) {
     );
 
     if (!hit) return false;
+    spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
 
     // ✅ 항상 반사 먼저 처리
-    const dir = getCollisionDirection(ball, { x: ex, y: ey, width: hitW, height: hitH });
+    const dir = getCollisionDirection(ball, {x: ex, y: ey, width: hitW, height: hitH});
     if (dir === "left" || dir === "right") ball.vx *= -1;
     else ball.vy *= -1;
-
-    reflexPlay();
 
     lastEnemyHitTime = now;
     if (enemyShipHP !== Infinity) {
         enemyShipHP--;
         if (enemyShipHP <= 0) {
+            const cannonSFX = new Audio("src/sfx/cannon.mp3");
+            cannonSFX.volume = localStorage.getItem("sfx-volume") / 100;
+            cannonSFX.currentTime = 0;
+            cannonSFX.play().then();
             addScore(500);
             enemyShipAlive = false;
         } else {
+            breakPlay();
             addScore(100);
             enemyShipInvincible = true;
             enemyShipInvincibleTimer = enemyShipInvincibleDuration;
         }
+    } else {
+        addScore(150);
+        breakPlay();
     }
     return true;
 }
@@ -387,12 +396,12 @@ function getLaserCooldownByLevel() {
 
     if (level === 1) return timeBalance * 3;
     if (level === 2) return timeBalance * 2;
-    if (level === 3) return timeBalance * 1;
+    if (level === 3) return timeBalance;
 
     // Infinity Mode
     if (gameTime < 60) return timeBalance * 3;
     else if (gameTime < 120) return timeBalance * 2;
-    else return timeBalance * 1;
+    else return timeBalance;
 }
 
 function getAsteroidIntervalByLevel() {
