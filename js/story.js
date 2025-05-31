@@ -23,15 +23,15 @@ const introStory = [
 
 const endingStory = [
     {
-        text: "제노스의 마지막 함대가 파괴되었습니다. 테라녹스는 다시 평화를 되찾았습니다.",
+        text: "제노스의 마지막 함대가 파괴되었습니다.<br>테라녹스는 다시 평화를 되찾았습니다.",
         media: { type: "image", src: "src/story/victory_scene.png" }
     },
     {
-        text: "당신의 용맹함 덕분에 은하계는 새로운 희망을 얻었습니다. 당신은 테라녹스의 영웅입니다.",
+        text: "당신의 활약으로 은하계는 새로운 희망을 얻었습니다.<br>당신은 테라녹스의 영웅입니다.",
         media: { type: "video", src: "src/story/hero_ceremony.mp4", autoplay: true }
     },
     {
-        text: "하지만 깊은 우주 어딘가, 새로운 위협이 꿈틀대고 있습니다... 계속될 전설을 위해.",
+        text: "하지만 깊은 우주 어딘가..<br>새로운 위협이 꿈틀대고 있습니다.. 계속될 전설을 위해.",
         media: { type: "image", src: "src/story/new_threat.gif" }
     }
 ];
@@ -93,12 +93,29 @@ function displaySlide(storyData) {
                      </video>`;
     }
 
+    // 미디어와 텍스트 표시
     $("#story-content").html(`
         ${mediaHtml}
-        <p>${slide.text}</p>
+        <p></p>
     `);
-    // 텍스트에 페이드 인 효과 적용
-    $("#story-content p").css("opacity", "0").animate({ opacity: "1" }, 500);
+
+    // 미디어 페이드 인 효과
+    $("#story-content img, #story-content video").addClass("fade-in");
+
+    // 텍스트를 한 글자씩 출력 (타자기 효과)
+    const $textElement = $("#story-content p");
+    const fullText = slide.text;
+    let currentCharIndex = 0;
+
+    $textElement.css("opacity", "1"); // 초기 투명도 제거
+    const typingInterval = setInterval(() => {
+        if (currentCharIndex < fullText.length) {
+            $textElement.html(fullText.substring(0, currentCharIndex + 1));
+            currentCharIndex++;
+        } else {
+            clearInterval(typingInterval);
+        }
+    }, 50); // 50ms 간격으로 한 글자씩 출력
 }
 
 window.showStory = showStory;
