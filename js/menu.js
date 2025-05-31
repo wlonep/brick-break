@@ -82,8 +82,97 @@ function openGame() {
     $(".level-btn").off("click").on("click", function () {
         clickButton();
         let level = $(this).parent().index() + 1;
-        startGame_Level(level);
+        //startGame_Level(level);
+        showStageInfo(level, $(this));
     });
+}
+
+function showStageInfo(level, planet_img){
+    let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
+    let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
+    let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
+    let descriptions = [
+        "제노스에게 점령당한 지구입니다. 한때는 아름다운 고향이었죠.</br>고향을 되찾기 위한 첫 번째 임무를 시작하세요.",
+        "강력한 중력장을 가진 리겔 행성. 제노스의 전초기지로 사용되고 있습니다. 제노스군의 약화를 위한 두 번째 임무를 시작하세요.",
+        "거대한 가스 행성 J1407B. 제노스의 주요 요새가 구축되어 있는 위험한 지역입니다. 제노스의 요새를 격파하고 침공을 끝마쳐주세요.",
+        "블랙홀 포웨히 근처의 제노스 최종 본거지. 시공간이 왜곡된 이곳에서 최후의 전투가 시작됩니다.</br>명심하세요, 블랙홀 안에서 벗어날 방법은 없습니다."
+    ];
+
+    // 원본 행성의 현재 위치 정보 가져오기
+    const originalRect = planet_img[0].getBoundingClientRect();
+    const windowWidth = $(window).width();
+    const windowHeight = $(window).height();
+    
+    // 목표 위치 계산 (화면의 좌측 하단)
+    const targetLeft = windowWidth * 0.05; 
+    const targetTop = windowHeight * 0.8;
+
+    // 이미지의 중심점 계산
+    const imageCenterX = originalRect.left+(originalRect.width/2);
+    const imageCenterY = originalRect.top+(originalRect.height/2);
+
+    //복사본 생성
+    const CloneImg = planet_img.clone();
+
+    // 레벨 선택 화면의 모든 요소를 fade out
+    $("#level_menu").fadeOut(300, function(){
+        CloneImg.attr('id', 'moving-planet');
+        // 복사본을 body에 추가하고 초기 위치 설정
+
+        CloneImg
+            .off()
+            .css({
+                "position": "fixed",
+                "left": imageCenterX + "px",
+                "top": imageCenterY + "px",
+                "transform": "translate(-50%, -50%)",
+                "z-index": 900,
+                "width": originalRect.width + "px",
+                "height": originalRect.height + "px"
+            });
+
+        $("body").append(CloneImg); //body에 append한건 정말 어쩔수가 없었습니다..
+        CloneImg
+            .animate({
+                "left": targetLeft + "px",
+                "top": targetTop + "px",
+                "width": (originalRect.width * 3.0) + "px", //사진 확대
+                "height": (originalRect.height * 3.0) + "px"
+            }, 800, function(){
+                $("#stage_title").text(level_name[level-1]);
+                $("#stage_difficulty").text(levels[level-1]).css({"color":levelColors[level-1]});
+                $("#stage_description").html(descriptions[level-1]);
+                $("#stage_score").text(localStorage.getItem(`level-${level}-score`) || 0);
+
+                $("#stage_info").css({"display":"block"}).animate({"opacity":"1"}, 400);
+
+                //버튼 이벤트 설정
+                $("#start_stage").off('click').on('click', function(){
+                    clickButton();
+                    hideStageInfo();
+                    startGame_Level(level);
+                })
+                $("#back_to_select").off('click').on('click', function(){
+                    clickButton();
+                    hideStageInfo();
+                    resetPlanetSelection();
+                })
+            })
+
+    });    
+}
+
+function hideStageInfo() {
+    $("#moving-planet").remove();
+    $("#stage_info").animate({opacity: 0}, 300, function() {
+        $(this).css('display', 'none');
+    });
+}
+function resetPlanetSelection() {
+    $("#moving-planet").remove();
+    $("#level_menu").fadeIn(300);
+    // 호버 이벤트 재설정
+    planetHoverEvent();
 }
 
 function openGameMenu() {
@@ -109,6 +198,8 @@ function planetHoverEvent() {
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
+    $(".level-btn").off('mouseenter mouseleave');
+
     $(".level-btn").mouseenter(function () {
         let levelIndex = $(this).parent().index();
         let parent = $(this).parent();
@@ -124,6 +215,7 @@ function planetHoverEvent() {
             const descript_Div = $("<div/>");
             descript_Div
                 .addClass("level-class")
+                .css("pointer-events", "none")
                 .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
                     Planet: <strong> ${level_name[levelIndex]}</strong><br/>
                     Difficulty: <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}<strong/>`)
