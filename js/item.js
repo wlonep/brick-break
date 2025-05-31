@@ -1,5 +1,5 @@
 const itemTypes = ['ammo', 'energy', 'health', 'rocket'];
-//ammo: 공 한개 더 발사가능 / energy: 10초간 공 속도 증가 (1.4배)/ health: 목숨 +1 / rocket: 화면 내 있는 운석 모두 파괴
+//ammo: 공 한개 더 발사가능 / energy: 10초간 공 속도 증가 (1.2배)/ health: 목숨 +1 / rocket: 화면 내 있는 운석 모두 파괴
 const itemWidth = 30;
 const itemHeight = 30;
 const itemSpeed = 100;
