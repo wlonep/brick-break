@@ -1,12 +1,57 @@
 const reflexSfx = new Audio("src/sfx/blop.mp3");
 const ballImg = new Image();
-const ballType = localStorage.getItem("ballType") || "blue";
+let ballType = localStorage.getItem("ballType") || "blue";
 ballImg.src = `src/ball/${ballType}.png`;
+
 const ballSize = 16;
 
 let balls = []; // 배열로 변경
 let maxBalls = 1; // 최대 발사 가능 공 개수, 초기값 1
 let speedMultiplier = 1; // 공 속도 배율, 기본값 1
+let explosions = [];
+let explosionFrames = [];
+setExplosionFrames();
+
+document.addEventListener('ballTypeChanged', function (event) {
+    ballType = event.detail.ballType;
+    ballImg.src = `src/ball/${ballType}.png`;
+    setExplosionFrames();
+});
+
+function setExplosionFrames() {
+    explosionFrames = [];
+    for (let i = 0; i < 9; i++) {
+        const img = new Image();
+        img.src = `src/vfx/explosion_${ballType}_${i + 1}.png`;
+        explosionFrames.push(img);
+    }
+}
+
+function spawnExplosion(x, y) {
+    explosions.push({
+        x: x - ballSize / 2,
+        y: y - ballSize / 2,
+        frame: 0
+    });
+}
+
+function drawExplosions() {
+    for (let i = explosions.length - 1; i >= 0; i--) {
+        const exp = explosions[i];
+        const frameIndex = Math.floor(exp.frame);
+        const img = explosionFrames[frameIndex];
+
+        if (img && img.complete) {
+            ctx.drawImage(img, exp.x, exp.y, 64, 64);
+        }
+
+        exp.frame += 0.2;
+
+        if (exp.frame >= explosionFrames.length) {
+            explosions.splice(i, 1);
+        }
+    }
+}
 
 function fireBall() {
     if (balls.length >= maxBalls) return;
@@ -44,6 +89,11 @@ function updateBall(delta) {
 
         if (ball.x <= 0 || ball.x + ballSize >= canvas.width) {
             ball.vx *= -1;
+            if (ball.x <= 0) {
+                ball.x = 0;
+            } else {
+                ball.x = canvas.width - ballSize;
+            }
         }
         if (ball.y <= 0) {
             ball.y = 0;

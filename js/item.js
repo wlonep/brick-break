@@ -15,7 +15,6 @@ let items = [];
 
 function createItem(x, y) {
     const randomType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-    console.log(`아이템 드랍 : ${randomType}`); // 디버깅 로그 추가
 
     items.push({
         x: x,

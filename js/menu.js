@@ -49,7 +49,7 @@ function goMenu() {
         $(this).hide();
         $("#main-menu")
             .css({left: "-30%", display: "block", opacity: "0"})
-            .animate({left: "0%", opacity: "1"}, 150, function() {
+            .animate({left: "0%", opacity: "1"}, 150, function () {
                 startBackgroundAnimation();
             });
     });
@@ -87,7 +87,7 @@ function openGame() {
     });
 }
 
-function showStageInfo(level, planet_img){
+function showStageInfo(level, planet_img) {
     let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
@@ -108,14 +108,14 @@ function showStageInfo(level, planet_img){
     const targetTop = windowHeight * 0.8;
 
     // 이미지의 중심점 계산
-    const imageCenterX = originalRect.left+(originalRect.width/2);
-    const imageCenterY = originalRect.top+(originalRect.height/2);
+    const imageCenterX = originalRect.left + (originalRect.width / 2);
+    const imageCenterY = originalRect.top + (originalRect.height / 2);
 
     //복사본 생성
     const CloneImg = planet_img.clone();
 
     // 레벨 선택 화면의 모든 요소를 fade out
-    $("#level_menu").fadeOut(300, function(){
+    $("#level_menu").fadeOut(300, function () {
         CloneImg.attr('id', 'moving-planet');
         // 복사본을 body에 추가하고 초기 위치 설정
 
@@ -138,20 +138,20 @@ function showStageInfo(level, planet_img){
                 "top": targetTop + "px",
                 "width": (originalRect.width * 3.0) + "px", //사진 확대
                 "height": (originalRect.height * 3.0) + "px"
-            }, 800, function(){
-                $("#stage_title").text(level_name[level-1]);
-                $("#stage_difficulty").text(levels[level-1]).css({"color":levelColors[level-1]});
-                $("#stage_description").html(descriptions[level-1]);
+            }, 800, function () {
+                $("#stage_title").text(level_name[level - 1]);
+                $("#stage_difficulty").text(levels[level - 1]).css({"color": levelColors[level - 1]});
+                $("#stage_description").html(descriptions[level - 1]);
                 $("#stage_score").text(localStorage.getItem(`level-${level}-score`) || 0);
 
-                $("#stage_info").css({"display":"block"}).animate({"opacity":"1"}, 400);
+                $("#stage_info").css({"display": "block"}).animate({"opacity": "1"}, 400);
 
                 //버튼 이벤트 설정
-                $("#start_stage").off('click').on('click', function(){
+                $("#start_stage").off('click').on('click', function () {
                     hideStageInfo();
                     startGame_Level(level);
                 })
-                $("#back_to_select").off('click').on('click', function(){
+                $("#back_to_select").off('click').on('click', function () {
                     hideStageInfo();
                     resetPlanetSelection();
                 })
@@ -162,10 +162,11 @@ function showStageInfo(level, planet_img){
 
 function hideStageInfo() {
     $("#moving-planet").remove();
-    $("#stage_info").animate({opacity: 0}, 300, function() {
+    $("#stage_info").animate({opacity: 0}, 300, function () {
         $(this).css('display', 'none');
     });
 }
+
 function resetPlanetSelection() {
     $("#moving-planet").remove();
     $("#level_menu").fadeIn(300);
@@ -198,28 +199,28 @@ function planetHoverEvent() {
 
     $(".level-btn").off('mouseenter mouseleave')
         .mouseenter(function () {
-        let levelIndex = $(this).parent().index();
-        let parent = $(this).parent();
+            let levelIndex = $(this).parent().index();
+            let parent = $(this).parent();
 
-        $(this).css({
-            'transform': 'scale(1.05) translateY(-5px)',
-            'cursor': 'pointer'
-        })
-        $(this).prev().css({
-            'transform': 'scale(1.05) translateY(-5px)'
-        })
-        if(parent.find(".level-class").length ===0){
-            const descript_Div = $("<div/>");
-            descript_Div
-                .addClass("level-class")
-                .css("pointer-events", "none")
-                .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
+            $(this).css({
+                'transform': 'scale(1.05) translateY(-5px)',
+                'cursor': 'pointer'
+            })
+            $(this).prev().css({
+                'transform': 'scale(1.05) translateY(-5px)'
+            })
+            if (parent.find(".level-class").length === 0) {
+                const descript_Div = $("<div/>");
+                descript_Div
+                    .addClass("level-class")
+                    .css("pointer-events", "none")
+                    .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
                     Planet: <strong> ${level_name[levelIndex]}</strong><br/>
                     Difficulty: <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}<strong/>`)
-                .appendTo(parent);
-        }
+                    .appendTo(parent);
+            }
 
-    }).mouseleave(function () {
+        }).mouseleave(function () {
         $(this).css({
             'transform': 'scale(1.0) translateY(5px)',
             'cursor': 'default'
@@ -232,11 +233,11 @@ function planetHoverEvent() {
 }
 
 function clearProgress() {
-    clickButton();
     // localStorage의 클리어 상태와 점수 초기화
     for (let i = 1; i <= 4; i++) {
         localStorage.removeItem(`level-${i}-cleared`);
         localStorage.removeItem(`level-${i}-score`);
     }
-    alert("진행 상태가 초기화되었습니다!");
+
+    $("<div class='popup'>진행 상태가 초기화되었습니다!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300)
 }

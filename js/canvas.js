@@ -2,6 +2,7 @@ const canvas = $('#game-canvas')[0];
 const ctx = canvas.getContext('2d');
 let lastTime = performance.now();
 let animationFrame = null;
+let isCheat = false;
 
 let level = 0;
 let lives = 5;
@@ -29,16 +30,6 @@ const bar = {
     x: 0,
     y: 0
 };
-
-// 치트 키 (테스트용)
-document.addEventListener('keydown', function(event) {
-    if (event.ctrlKey && event.shiftKey && event.key === 'C') {
-        stopScroll = true;
-        enemyShipAlive = false;
-        asteroids = [];
-        console.log("Cheat activated: Stage cleared!");
-    }
-});
 
 function initCanvas() {
     const displayHeight = $(window).height();
@@ -75,10 +66,17 @@ function drawBackground() {
 
     if (stopScroll || !isPlaying) return;
     scrollY += 0.5;
+    if (isCheat) scrollY += 5;
 
     const totalHeight = h1 + h2 - canvas.height;
     if (scrollY >= totalHeight) {
         stopScroll = true;
+        if (isCheat) {
+            setInterval(() => {
+                resetEntities();
+                enemyShipAlive = false;
+            }, 500)
+        }
     }
 }
 
@@ -96,19 +94,20 @@ function draw(timestamp) {
 
     drawShipBar();
     drawShip();
-    updateBall(delta);
+    drawBall();
+    drawAsteroids();
+    drawItems();
+    drawEnemyShip();
+    drawEnemyLasers();
+    drawExplosions();
     if (isPlaying) {
+        updateBall(delta);
         updateAsteroidSpawn(delta);
         updateAsteroid();
         updateEnemyShipInvincibility(delta);
         updateItems(delta);
         updateEnemyShip();
-        drawBall();
-        drawAsteroids();
-        drawItems();
-        drawEnemyShip();
         updateEnemyLasers(delta);
-        drawEnemyLasers();
     }
     animationFrame = requestAnimationFrame(draw);
 }
@@ -136,6 +135,12 @@ function eventHandler() {
 }
 
 function subtractLives() {
+    if (isCheat) return true;
+
+    const subtractSFX = new Audio("src/sfx/subtract.mp3");
+    subtractSFX.volume = localStorage.getItem("sfx-volume") / 100;
+    subtractSFX.currentTime = 0;
+    subtractSFX.play().then();
     lives--;
     displayLives();
     if (lives === 0) return defeat();
@@ -144,16 +149,26 @@ function subtractLives() {
 
 function displayLives() {
     const health = $("#health");
+
     health.empty().append("목숨: ");
     for (let i = 0; i < lives; i++) {
         const heart = new Image();
         heart.src = "src/icons/heart.png";
+
+        heart.classList.add("blink");
+        void heart.offsetWidth;
+
         health.append(heart);
     }
 }
 
 function defeat() {
     isPlaying = false;
+
+    const loseSFX = new Audio("src/sfx/lose.mp3");
+    loseSFX.volume = localStorage.getItem("sfx-volume") / 100;
+    loseSFX.currentTime = 0;
+    loseSFX.play().then();
 
     // #status 캐싱 및 초기화
     const $status = $("#status")
@@ -201,6 +216,11 @@ function defeat() {
 }
 
 function victory() {
+    const winSFX = new Audio("src/sfx/win.mp3");
+    winSFX.volume = localStorage.getItem("sfx-volume") / 100;
+    winSFX.currentTime = 0;
+    winSFX.play().then();
+
     // 현재 레벨 클리어 상태 저장
     localStorage.setItem(`level-${level}-cleared`, "true");
 
@@ -228,10 +248,9 @@ function victory() {
         const isLevel4 = level === 4;
 
         if (!isLevel4) {
-            const message = level === 3 ? "무한 모드로 가시겠습니까?" : "다음 단계로 가시겠습니까?";
-            const yesText = level === 3 ? "예(무한 모드)" : "예(다음 단계)";
+            const yesText = level === 3 ? "무한 모드로" : "다음 단계로";
             btnArea.append(
-                $("<button class='status-btn'></button>").text(yesText).on("click", function () {
+                $(`<button class='menu-btn'>${yesText}</button>`).off("click").on("click", function () {
                     // #status를 원래 위치로 복원 및 내용 제거
                     $status.appendTo("#game-wrapper").html("").hide();
                     const nextLevel = level === 3 ? 4 : level + 1;
@@ -241,7 +260,7 @@ function victory() {
         }
 
         btnArea.append(
-            $("<button class='status-btn'>단계 선택</button>").on("click", function () {
+            $("<button class='menu-btn'>단계 선택</button>").off("click").on("click", function () {
                 // #status를 원래 위치로 복원 및 내용 제거
                 $status.appendTo("#game-wrapper").html("").hide();
                 openGameMenu();
@@ -291,6 +310,7 @@ function resetGame() {
     balls = [];
     maxBalls = 1;
     speedMultiplier = 1;
+    explosions = [];
     resetEntities();
 
     initCanvas();
@@ -367,14 +387,23 @@ function startCountdown() {
     bar.x = canvas.width / 2 - bar.width / 2;
     shipX = bar.x + (bar.width - shipWidth) / 2;
 
+    const beepSFX = new Audio("src/sfx/beep.mp3");
+    beepSFX.volume = localStorage.getItem("sfx-volume") / 100;
+    const startSFX = new Audio("src/sfx/start.mp3");
+    startSFX.volume = localStorage.getItem("sfx-volume") / 100;
+    startSFX.currentTime = 0;
+
     let count = 5;
     const countFunction = () => {
         if (count > 0) {
             $("#status").html(count).css("display", "flex");
             count--;
+            beepSFX.currentTime = 0;
+            beepSFX.play().then();
         } else if (count === 0) {
             $("#status").html("GAME START").css("display", "flex");
             count--;
+            startSFX.play().then();
         } else {
             clearInterval(countdown);
             $("#status").html("").css("display", "none");

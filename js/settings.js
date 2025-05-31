@@ -70,6 +70,10 @@ function changeBall(type) {
     $("#ball-preview").html(previewImage)
     $('#ball-select').val(type);
     localStorage.setItem("ballType", type);
+    const ballChangedEvent = new CustomEvent('ballTypeChanged', {
+        detail: {ballType: type}
+    });
+    document.dispatchEvent(ballChangedEvent);
 }
 
 function openPopupSettings() {
