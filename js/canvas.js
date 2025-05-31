@@ -107,6 +107,8 @@ function draw(timestamp) {
         drawAsteroids();
         drawItems();
         drawEnemyShip();
+        updateEnemyLasers(delta);
+        drawEnemyLasers();
     }
     animationFrame = requestAnimationFrame(draw);
 }

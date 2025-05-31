@@ -1,7 +1,7 @@
 const breakSfx = new Audio("src/sfx/pling.mp3");
 
+let timeBalance = 1.0; // 단위: 초
 let asteroidSpawnTimer = -1;  // START 후 1초 지연
-const asteroidSpawnInterval = 5;
 
 let lastEnemyHitTime = 0;
 const enemyHitCooldown = 0.5;
@@ -24,7 +24,14 @@ let enemyShipHP = Infinity;
 let enemyShipAlive = true;
 let enemyShipInvincible = false;
 let enemyShipInvincibleTimer = 0;
-const enemyShipInvincibleDuration = 1; // 3초
+const enemyShipInvincibleDuration = 1;
+
+const enemyLasers = [];
+const enemyLaserSpeed = 250; // 레이저 속도 조절(공이 지금 400임)
+let enemyLaserTimer = 0;
+const enemyLaserImg = new Image();
+enemyLaserImg.src = "src/ball/enemyship_bullet.png";
+const laserAngles = [-30, -15, 0, 15, 30].map(deg => deg * Math.PI / 180); // 0°, -15°, +15°, -30°, +30°
 
 
 const asteroidImages = [];
@@ -66,9 +73,11 @@ function createAsteroid(x) {
 
 function updateAsteroidSpawn(delta) {
     if (!isPlaying) return;
-    asteroidSpawnTimer += delta;
 
-    if (asteroidSpawnTimer >= asteroidSpawnInterval && (enemyShipAlive || !stopScroll)) {
+    asteroidSpawnTimer += delta;
+    const interval = getAsteroidIntervalByLevel(); // 동적 주기
+
+    if (asteroidSpawnTimer >= interval && (enemyShipAlive || !stopScroll)) {
         asteroidSpawnTimer = 0;
         const randomIndex = Math.floor(Math.random() * fall_point.length);
         createAsteroid(fall_point[randomIndex]);
@@ -202,12 +211,61 @@ function isBallHitEnemyShip(ball) {
     return true;
 }
 
+function isLaserHitPlayer(laser) {
+    return (
+        laser.x > shipX &&
+        laser.x < shipX + shipWidth &&
+        laser.y > shipY &&
+        laser.y < shipY + shipHeight
+    );
+}
+
 function updateEnemyShipInvincibility(delta) {
     if (enemyShipInvincible) {
         enemyShipInvincibleTimer -= delta;
         if (enemyShipInvincibleTimer <= 0) {
             enemyShipInvincible = false;
         }
+    }
+}
+
+function updateEnemyLasers(delta) {
+    // 난이도 기반 주기 결정
+    let cooldown = getLaserCooldownByLevel();
+
+    enemyLaserTimer += delta;
+    if (enemyLaserTimer >= cooldown) {
+        fireEnemyLaser();
+        enemyLaserTimer = 0;
+    }
+
+    for (let i = enemyLasers.length - 1; i >= 0; i--) {
+        const laser = enemyLasers[i];
+        laser.x += laser.vx * enemyLaserSpeed * delta;
+        laser.y += laser.vy * enemyLaserSpeed * delta;
+
+        if (laser.x < 0 || laser.x > canvas.width || laser.y > canvas.height) {
+            enemyLasers.splice(i, 1);
+            continue;
+        }
+
+        if (isLaserHitPlayer(laser)) {
+            subtractLives();
+            enemyLasers.splice(i, 1);
+        }
+    }
+}
+
+function fireEnemyLaser() {
+    if (!enemyShipAlive) return;
+
+    for (const angle of laserAngles) {
+        enemyLasers.push({
+            x: enemyShipX + enemyShipWidth / 2,
+            y: enemyShipY + enemyShipHeight,
+            vx: Math.sin(angle),
+            vy: Math.cos(angle),
+        });
     }
 }
 
@@ -305,4 +363,38 @@ function drawEnemyHPBar() {
         ctx.fillStyle = "limegreen";
         ctx.fillRect(barX + i * segmentWidth, barY, segmentWidth - 1, barHeight);
     }
+}
+
+function drawEnemyLasers() {
+    for (const laser of enemyLasers) {
+        if (!enemyLaserImg.complete) continue;
+
+        const angle = Math.atan2(laser.vy, laser.vx) + Math.PI / 2;
+
+        const size = 16; // 원하는 크기 설정
+        const halfSize = size / 2;
+
+        ctx.save();
+        ctx.translate(laser.x, laser.y);
+        ctx.rotate(angle);
+        ctx.drawImage(enemyLaserImg, -halfSize, -halfSize, size, size);
+        ctx.restore();
+    }
+}
+
+function getLaserCooldownByLevel() {
+    const gameTime = scrollY * 60 / canvas.height; // 약간의 보정으로 경과 시간 추정 (단위: 초)
+
+    if (level === 1) return timeBalance * 3;
+    if (level === 2) return timeBalance * 2;
+    if (level === 3) return timeBalance * 1;
+
+    // Infinity Mode
+    if (gameTime < 60) return timeBalance * 3;
+    else if (gameTime < 120) return timeBalance * 2;
+    else return timeBalance * 1;
+}
+
+function getAsteroidIntervalByLevel() {
+    return getLaserCooldownByLevel() * 1.7;
 }
