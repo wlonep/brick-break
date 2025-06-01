@@ -91,14 +91,20 @@ function updateAsteroid() {
         asteroid.y += asteroidSpeed;
         asteroid.angle += asteroid.rotationSpeed;
 
+        let collisionHandled = false; // 해당 운석에 대해 충돌 처리 여부 추적
         for (let j = balls.length - 1; j >= 0; j--) {
             const ball = balls[j];
-            if (ball && isColliding(ball, asteroid)) {
+            if (ball && isColliding(ball, asteroid) && !collisionHandled) {
                 spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
 
                 // 충돌 방향 계산 (이동 방향 기준)
                 const dir = getCollisionDirection(ball, asteroid);
-                // 공의 위치 보정 (충돌 지점으로 이동)
+
+                // 공의 위치를 이전 프레임 위치로 되돌림
+                ball.x = ball.prevX;
+                ball.y = ball.prevY;
+
+                // 충돌 방향에 따라 방향 변경 및 위치 보정
                 if (dir === "left") {
                     ball.x = asteroid.x - ballSize;
                     ball.vx *= -1;
@@ -123,6 +129,8 @@ function updateAsteroid() {
                         asteroid.y + asteroid.height / 2 - itemHeight / 2
                     );
                 }
+
+                collisionHandled = true; // 충돌 처리 완료
                 break; // 해당 공의 처리 종료
             }
         }

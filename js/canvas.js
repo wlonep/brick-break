@@ -101,9 +101,9 @@ function draw(timestamp) {
     drawEnemyLasers();
     drawExplosions();
     if (isPlaying) {
-        updateBall(delta);
         updateAsteroidSpawn(delta);
-        updateAsteroid();
+        updateAsteroid(); // 운석과 공의 충돌 처리 먼저
+        updateBall(delta); // 충돌 후 공 위치 업데이트
         updateEnemyShipInvincibility(delta);
         updateItems(delta);
         updateEnemyShip();
