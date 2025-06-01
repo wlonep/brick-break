@@ -672,8 +672,16 @@ h3 {
     width: 100px;
     height: 100px;
     z-index: 2;
+}
+
+.asteroid:not(.ring-planet) {
     animation: rotate-asteroid linear infinite;
     animation-duration: 5s;
+}
+
+.ring-planet {
+    width: 300px;
+    height: 300px;
 }
 
 @keyframes rotate-asteroid {

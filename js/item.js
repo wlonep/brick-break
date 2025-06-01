@@ -57,12 +57,11 @@ function itemHitsBar(item){
     )
 }
 function applyItemEffect(item) {
-    showItemEffect(item.type);
-    const health = $("#health");
-
     switch (item.type) {
         case 'ammo':
-            maxBalls = Math.min(maxBalls + 1, 4); // 공 최대 4개까지 가능
+            if (window.increaseMaxBalls) {
+                window.increaseMaxBalls(); // ball.js에서 maxBalls 증가
+            }
             break;
         case 'energy':
             if (speedMultiplier === 1) {
@@ -75,6 +74,7 @@ function applyItemEffect(item) {
         case 'health':
             if (lives < 5) {
                 lives++;
+                const health = $("#health");
                 health.empty().append("목숨: ");
                 for (let i = 0; i < lives; i++) {
                     const heart = new Image();
@@ -97,15 +97,18 @@ function applyItemEffect(item) {
             }
             break;
     }
+    // showItemEffect는 모든 효과 적용 후 호출
+    showItemEffect(item.type);
 }
 
-function showItemEffect(itemType){
+function showItemEffect(itemType) {
     let message = "";
     let className = "";
 
     switch(itemType){
         case 'ammo':
-            message = `탄알 획득!<br/>공 개수+1(최대4)<br/>(현재 개수: ${maxBalls}개)`;
+            const maxBallsValue = window.getMaxBalls ? window.getMaxBalls() : 1;
+            message = `탄알 획득!<br/>공 개수+1(최대4)<br/>(현재 최대 개수: ${maxBallsValue}개)`;
             className = "ammo-effect";
             break;
 

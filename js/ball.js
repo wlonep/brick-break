@@ -12,6 +12,17 @@ let explosions = [];
 let explosionFrames = [];
 setExplosionFrames();
 
+function getMaxBalls() {
+    return maxBalls;
+}
+window.getMaxBalls = getMaxBalls;
+
+// maxBalls 증가 함수 추가
+function increaseMaxBalls() {
+    maxBalls = Math.min(maxBalls + 1, 4); // 최대 4개
+}
+window.increaseMaxBalls = increaseMaxBalls;
+
 document.addEventListener('ballTypeChanged', function (event) {
     ballType = event.detail.ballType;
     ballImg.src = `src/ball/${ballType}.png`;
@@ -144,4 +155,3 @@ function drawBall() {
         }
     }
 }
-

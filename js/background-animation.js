@@ -19,16 +19,13 @@ function initAsteroids() {
         img.style.animationDuration = `${rotationSpeed}s`;
         img.style.animationDirection = rotationDirection;
 
-        // 공전 방향 설정 (시계 또는 반시계)
-        const orbitDirection = Math.random() < 0.5 ? 1 : -1; // 1: 시계 방향, -1: 반시계 방향
-
         backgroundAsteroids.push({
             id: `asteroid-${i}`,
             type: "asteroid", // type 속성 추가
             width: 100, // 고정 크기 추가
             height: 100,
             scale: Math.random() * 0.8 + 0.2, // 0.2 ~ 1.0
-            speed: (Math.random() * 0.003 + 0.0003) * orbitDirection, // 속도에 방향 적용
+            speed: -(Math.random() * 0.004 + 0.0005),
             angle: Math.random() * 2 * Math.PI,
             radiusScaleX: Math.random() * 0.5 + 0.5, // 타원형 궤적을 위한 가로 반지름 비율 (0.5~1.0)
             radiusScaleY: Math.random() * 0.5 + 0.5, // 타원형 궤적을 위한 세로 반지름 비율 (0.5~1.0)
@@ -38,19 +35,9 @@ function initAsteroids() {
     // space-ring-planet 하나 생성
     const ringPlanetImg = document.createElement("img");
     ringPlanetImg.src = "src/menu/space-ring-planet.png";
-    ringPlanetImg.className = "asteroid";
+    ringPlanetImg.className = "asteroid ring-planet";
     ringPlanetImg.id = "ring-planet";
     container.appendChild(ringPlanetImg);
-
-    // 링 행성의 자전 속도와 방향 설정
-    const ringRotationSpeed = Math.random() * 3 + 2;
-    const ringRotationDirection = Math.random() < 0.5 ? "normal" : "reverse";
-
-    ringPlanetImg.style.animationDuration = `${ringRotationSpeed}s`;
-    ringPlanetImg.style.animationDirection = ringRotationDirection;
-
-    // 링 행성의 공전 방향 설정
-    const ringOrbitDirection = Math.random() < 0.5 ? 1 : -1;
 
     backgroundAsteroids.push({
         id: "ring-planet",
@@ -58,7 +45,7 @@ function initAsteroids() {
         width: 200,
         height: 200,
         scale: 0.5,
-        speed: 0.0005 * ringOrbitDirection,
+        speed: -0.0005,
         angle: Math.random() * 2 * Math.PI,
         radiusScaleX: Math.random() * 0.5 + 0.5,
         radiusScaleY: Math.random() * 0.5 + 0.5,

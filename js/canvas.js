@@ -65,7 +65,7 @@ function drawBackground() {
     }
 
     if (stopScroll || !isPlaying) return;
-    scrollY += 50;
+    scrollY += 0.5;
     if (isCheat) scrollY += 5;
 
     const totalHeight = h1 + h2 - canvas.height;
