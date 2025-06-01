@@ -1,10 +1,11 @@
 function changeShipColor() {
-    const saved_shipSrc = localStorage.getItem("shipColor");
+    const saved_shipSrc = localStorage.getItem("shipColor") || "blue";
+
     const shipBtn = $(".ship-btn")
     if (saved_shipSrc) {
         shipBtn.each(function () {
             let imgSrc = $(this).attr("src");
-            if (imgSrc === saved_shipSrc) {
+            if (imgSrc.includes(saved_shipSrc)) {
                 $(this).css({
                     //'border-color': 'white',
                     'border': '1px solid white',
@@ -24,12 +25,10 @@ function changeShipColor() {
         .on("click", function () {
             clickButton();
             shipBtn.css({
-                //'border-color': 'none',
-                'border': 'none',
-                'box-shadow': 'none'
+                'border': '1px solid transparent',
+                'box-shadow': '0 0 10px rgba(0, 0, 0, 0)'
             })
             $(this).css({
-                //'border-color': 'white',
                 'border': '1px solid white',
                 'border-radius': '5px',
                 'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
