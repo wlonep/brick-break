@@ -652,21 +652,11 @@ h3 {
 }
 
 @keyframes star-shimmer {
-    0% {
-        transform: translateX(0) translateY(0);
-    }
-    25% {
-        transform: translateX(-10px) translateY(5px);
-    }
-    50% {
-        transform: translateX(0) translateY(0);
-    }
-    75% {
-        transform: translateX(10px) translateY(-5px);
-    }
-    100% {
-        transform: translateX(0) translateY(0);
-    }
+    0% { transform: translateX(0) translateY(0);}
+    25% { transform: translateX(-10px) translateY(5px);}
+    50% { transform: translateX(0) translateY(0); }
+    75% { transform: translateX(10px) translateY(-5px);}
+    100% { transform: translateX(0) translateY(0);}
 }
 
 #asteroid-container {
@@ -682,6 +672,13 @@ h3 {
     width: 100px;
     height: 100px;
     z-index: 2;
+    animation: rotate-asteroid linear infinite;
+    animation-duration: 5s;
+}
+
+@keyframes rotate-asteroid {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
 }
 
 #main-menu {
