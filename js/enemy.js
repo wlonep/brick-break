@@ -94,29 +94,41 @@ function updateAsteroid() {
         let collisionHandled = false; // 해당 운석에 대해 충돌 처리 여부 추적
         for (let j = balls.length - 1; j >= 0; j--) {
             const ball = balls[j];
-            if (ball && isColliding(ball, asteroid) && !collisionHandled) {
+            if (ball && isColliding(ball, asteroid) && !collisionHandled && !ball.collided) {
+                ball.collided = true;
                 spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
 
                 // 충돌 방향 계산 (이동 방향 기준)
                 const dir = getCollisionDirection(ball, asteroid);
 
-                // 공의 위치를 이전 프레임 위치로 되돌림
-                ball.x = ball.prevX;
-                ball.y = ball.prevY;
+                // // 공의 위치를 이전 프레임 위치로 되돌림
+                // ball.x = ball.prevX;
+                // ball.y = ball.prevY;
+                //
+                // // 충돌 방향에 따라 방향 변경 및 위치 보정
+                // if (dir === "left") {
+                //     ball.x = asteroid.x - ballSize;
+                //     ball.vx *= -1;
+                // } else if (dir === "right") {
+                //     ball.x = asteroid.x + asteroid.width;
+                //     ball.vx *= -1;
+                // } else if (dir === "top") {
+                //     ball.y = asteroid.y - ballSize;
+                //     ball.vy *= -1;
+                // } else if (dir === "bottom") {
+                //     ball.y = asteroid.y + asteroid.height;
+                //     ball.vy *= -1;
+                // }
 
-                // 충돌 방향에 따라 방향 변경 및 위치 보정
-                if (dir === "left") {
-                    ball.x = asteroid.x - ballSize;
+                // 속도 반사
+                if (dir === "left" || dir === "right") {
                     ball.vx *= -1;
-                } else if (dir === "right") {
-                    ball.x = asteroid.x + asteroid.width;
-                    ball.vx *= -1;
-                } else if (dir === "top") {
-                    ball.y = asteroid.y - ballSize;
+                    // 위치 보정
+                    ball.x = dir === "left" ? asteroid.x - ballSize : asteroid.x + asteroid.width;
+                } else {
                     ball.vy *= -1;
-                } else if (dir === "bottom") {
-                    ball.y = asteroid.y + asteroid.height;
-                    ball.vy *= -1;
+                    // 위치 보정
+                    ball.y = dir === "top" ? asteroid.y - ballSize : asteroid.y + asteroid.height;
                 }
 
                 breakPlay();
@@ -321,25 +333,39 @@ function getCollisionDirection(ball, obj) {
     const objBottom = obj.y + obj.height;
 
     // 이동 방향과 충돌 지점을 기준으로 방향 결정
-    if (dx > 0 && ballCx >= objLeft && ball.prevX + ballSize / 2 < objLeft) {
+    if (dx > 0 && ballCx >= objLeft && ball.prevX + ballSize / 2 <= objLeft) {
         return "left"; // 오른쪽으로 이동 중, 운석 왼쪽 면 충돌
-    } else if (dx < 0 && ballCx <= objRight && ball.prevX + ballSize / 2 > objRight) {
+    } else if (dx < 0 && ballCx <= objRight && ball.prevX + ballSize / 2 >= objRight) {
         return "right"; // 왼쪽으로 이동 중, 운석 오른쪽 면 충돌
-    } else if (dy > 0 && ballCy >= objTop && ball.prevY + ballSize / 2 < objTop) {
+    } else if (dy > 0 && ballCy >= objTop && ball.prevY + ballSize / 2 <= objTop) {
         return "top"; // 아래로 이동 중, 운석 윗면 충돌
-    } else if (dy < 0 && ballCy <= objBottom && ball.prevY + ballSize / 2 > objBottom) {
+    } else if (dy < 0 && ballCy <= objBottom && ball.prevY + ballSize / 2 >= objBottom) {
         return "bottom"; // 위로 이동 중, 운석 아랫면 충돌
     }
 
     // 기본적으로 현재 위치 기준으로 판단 (보조적)
-    const objCx = obj.x + obj.width / 2;
-    const objCy = obj.y + obj.height / 2;
-    const dxPos = ballCx - objCx;
-    const dyPos = ballCy - objCy;
+    // const objCx = obj.x + obj.width / 2;
+    // const objCy = obj.y + obj.height / 2;
+    // const dxPos = ballCx - objCx;
+    // const dyPos = ballCy - objCy;
 
-    return Math.abs(dxPos) > Math.abs(dyPos)
-        ? (dxPos > 0 ? "right" : "left")
-        : (dyPos > 0 ? "bottom" : "top");
+    // 이동 방향이 미세할 경우 위치 기반 판단
+    const overlapLeft = ballCx - objLeft;
+    const overlapRight = objRight - ballCx;
+    const overlapTop = ballCy - objTop;
+    const overlapBottom = objBottom - ballCy;
+
+    // 가장 작은 겹침 방향을 선택
+    const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+    if (minOverlap === overlapLeft) return "left";
+    if (minOverlap === overlapRight) return "right";
+    if (minOverlap === overlapTop) return "top";
+    return "bottom";
+
+    // return Math.abs(dxPos) > Math.abs(dyPos)
+    //     ? (dxPos > 0 ? "right" : "left")
+    //     : (dyPos > 0 ? "bottom" : "top");
 }
 
 function drawEnemyShip() {

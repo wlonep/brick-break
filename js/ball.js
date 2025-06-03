@@ -90,6 +90,9 @@ function updateBall(delta) {
         const ball = balls[i];
         if (!ball) continue;
 
+        // 프레임 시작 시 충돌 플래그 초기화
+        ball.collided = false;
+
         const speed = 400 * speedMultiplier;
 
         ball.prevX = ball.x;

@@ -3,7 +3,7 @@ const itemTypes = ['ammo', 'energy', 'health', 'rocket'];
 const itemWidth = 30;
 const itemHeight = 30;
 const itemSpeed = 100;
-const itemDropChance = 1;
+const itemDropChance = 0.5;
 
 const itemImages = {};
 itemTypes.forEach(type => {
