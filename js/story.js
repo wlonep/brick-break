@@ -41,6 +41,9 @@ let storyType = "";
 let storyInterval = null;
 
 function showStory(type, callback) {
+    if (type === "intro" && localStorage.getItem("hasSeenIntroStory"))
+        return callback();
+
     storyType = type;
     const storyData = type === "intro" ? introStory : endingStory;
     currentSlide = 0;
