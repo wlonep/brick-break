@@ -252,5 +252,6 @@ function clearProgress() {
         localStorage.removeItem(`level-${i}-score`);
     }
 
-    $("<div class='popup'>진행 상태가 초기화되었습니다!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300)
+    $("<div class='popup'>진행 상태가 초기화되었습니다!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300);
+    setInterval(() => window.location.reload(), 1000);
 }
