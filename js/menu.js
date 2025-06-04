@@ -79,15 +79,19 @@ function openGame() {
         showStory("intro", openGameMenu);
     });
 
-    $(".level-btn").off("click").on("click", function () {
+    $(".planet-container").off("click").on("click", function () {
         clickButton();
-        let level = $(this).parent().index() + 1;
+        let level = $(this).index() + 1;
         //startGame_Level(level);
         showStageInfo(level, $(this));
     });
 }
 
-function showStageInfo(level, planet_img) {
+function showStageInfo(level, clickedObj) {
+    const planet_img = clickedObj.find(".level-btn");
+    if (clickedObj[0].classList.contains("locked"))
+        return $("<div class='popup'>이전 단계를 먼저 완료해 주세요!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300)
+
     let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
@@ -175,6 +179,13 @@ function resetPlanetSelection() {
 }
 
 function openGameMenu() {
+    $(".planet-container").each(function () {
+        const level = $(this).index();
+        const levelBool = localStorage.getItem(`level-${level}-cleared`)
+        if (levelBool) {
+            $(this).removeClass("locked").find(".planet-number").text(level + 1);
+        }
+    })
     $("#game")
         .css({left: "20%", display: "block", opacity: "0"})
         .animate({left: "0", opacity: "1"}, 150, function () {
@@ -197,19 +208,20 @@ function planetHoverEvent() {
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
-    $(".level-btn").off('mouseenter mouseleave')
+    $(".planet-container").not(".locked").off('mouseenter mouseleave')
         .mouseenter(function () {
-            let levelIndex = $(this).parent().index();
-            let parent = $(this).parent();
+            let levelIndex = $(this).index();
+            let levelText = $(this).find(".planet-number");
+            let levelImg = $(this).find(".level-btn")
 
-            $(this).css({
+            levelImg.css({
                 'transform': 'scale(1.05) translateY(-5px)',
                 'cursor': 'pointer'
             })
-            $(this).prev().css({
+            levelText.css({
                 'transform': 'scale(1.05) translateY(-5px)'
             })
-            if (parent.find(".level-class").length === 0) {
+            if ($(this).find(".level-class").length === 0) {
                 const descript_Div = $("<div/>");
                 descript_Div
                     .addClass("level-class")
@@ -217,18 +229,19 @@ function planetHoverEvent() {
                     .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
                     Planet: <strong> ${level_name[levelIndex]}</strong><br/>
                     Difficulty: <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}<strong/>`)
-                    .appendTo(parent);
+                    .appendTo($(this));
             }
 
-        }).mouseleave(function () {
-        $(this).css({
-            'transform': 'scale(1.0) translateY(5px)',
-            'cursor': 'default'
         })
-        $(this).prev().css({
-            'transform': 'scale(1.0) translateY(5px)'
-        })
-        $(this).parent().find(".level-class").remove();
+        .mouseleave(function () {
+            $(this).find(".level-btn").css({
+                'transform': 'scale(1.0) translateY(5px)',
+                'cursor': 'default'
+            })
+            $(this).find(".planet-number").css({
+                'transform': 'scale(1.0) translateY(5px)'
+            })
+            $(this).find(".level-class").remove();
     })
 }
 
