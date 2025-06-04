@@ -861,3 +861,7 @@ h3 {
     z-index: 1002;
     display: none; /* 기본적으로 숨김 */
 }
+
+.locked {
+    filter: grayscale(100%);
+}
