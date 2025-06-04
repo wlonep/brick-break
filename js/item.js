@@ -4,6 +4,7 @@ const itemWidth = 30;
 const itemHeight = 30;
 const itemSpeed = 100;
 const itemDropChance = 0.5;
+// const explosionSfx = new Audio("src/sfx/cannon.mp3");
 
 const itemImages = {};
 itemTypes.forEach(type => {
@@ -86,6 +87,14 @@ function applyItemEffect(item) {
         case 'rocket':
             for (let i = asteroids.length - 1; i >= 0; i--) {
                 const asteroid = asteroids[i];
+
+                // 폭발 효과 추가
+                spawnAsteroidExplosion(asteroid.x + asteroid.width / 2, asteroid.y + asteroid.height / 2);
+                // 폭발 사운드 재생
+                explosionSfx.volume = localStorage.getItem("sfx-volume") / 100;
+                explosionSfx.currentTime = 0;
+                explosionSfx.play();
+
                 addScore(50);
                 if (Math.random() < itemDropChance) {
                     createItem(

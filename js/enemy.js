@@ -1,4 +1,9 @@
 const breakSfx = new Audio("src/sfx/pling.mp3");
+const explosionSfx = new Audio("src/sfx/cannon.mp3");
+
+let asteroidExplosions = [];
+let asteroidExplosionFrames = [];
+setAsteroidExplosionFrames();
 
 let timeBalance = 1.0; // 단위: 초
 let asteroidSpawnTimer = -1;  // START 후 1초 지연
@@ -98,6 +103,14 @@ function updateAsteroid() {
                 ball.collided = true;
                 spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
 
+                // 운석 중심에서 폭발
+                spawnAsteroidExplosion(asteroid.x + asteroid.width / 2, asteroid.y + asteroid.height / 2);
+
+                // 폭발 사운드 재생
+                explosionSfx.volume = localStorage.getItem("sfx-volume") / 100;
+                explosionSfx.currentTime = 0;
+                explosionSfx.play();
+
                 // 충돌 방향 계산 (이동 방향 기준)
                 const dir = getCollisionDirection(ball, asteroid);
 
@@ -187,6 +200,8 @@ function isColliding(ball, asteroid) {
     );
 }
 
+window.spawnAsteroidExplosion = spawnAsteroidExplosion;
+
 function isBallHitEnemyShip(ball) {
     if (!enemyShipAlive) return false;
 
@@ -221,10 +236,16 @@ function isBallHitEnemyShip(ball) {
     if (enemyShipHP !== Infinity) {
         enemyShipHP--;
         if (enemyShipHP <= 0) {
-            const cannonSFX = new Audio("src/sfx/cannon.mp3");
-            cannonSFX.volume = localStorage.getItem("sfx-volume") / 100;
-            cannonSFX.currentTime = 0;
-            cannonSFX.play().then();
+            // const cannonSFX = new Audio("src/sfx/cannon.mp3");
+            // cannonSFX.volume = localStorage.getItem("sfx-volume") / 100;
+            // cannonSFX.currentTime = 0;
+            // cannonSFX.play().then();
+
+            spawnAsteroidExplosion(enemyShipX + enemyShipWidth / 2, enemyShipY + enemyShipHeight / 2);
+            explosionSfx.volume = localStorage.getItem("sfx-volume") / 100;
+            explosionSfx.currentTime = 0;
+            explosionSfx.play();
+
             addScore(500);
             enemyShipAlive = false;
         } else {
@@ -317,6 +338,7 @@ function drawAsteroids() {
         );
         ctx.restore();
     }
+    drawAsteroidExplosions(); // 운석 폭발 렌더링
 }
 
 function getCollisionDirection(ball, obj) {
@@ -440,4 +462,38 @@ function getLaserCooldownByLevel() {
 
 function getAsteroidIntervalByLevel() {
     return getLaserCooldownByLevel() * 1.7;
+}
+
+function setAsteroidExplosionFrames() {
+    asteroidExplosionFrames = [];
+    for (let i = 1; i <= 8; i++) {
+        const img = new Image();
+        img.src = `src/asteroid/explosion_asteroid_${i}.png`;
+        asteroidExplosionFrames.push(img);
+    }
+}
+
+function spawnAsteroidExplosion(x, y) {
+    asteroidExplosions.push({
+        x: x - 50, // 운석 폭발 크기(100x100) 중심 조정
+        y: y - 50,
+        frame: 0
+    });
+}
+
+function drawAsteroidExplosions() {
+    for (let i = asteroidExplosions.length - 1; i >= 0; i--) {
+        const exp = asteroidExplosions[i];
+        const frameIndex = Math.floor(exp.frame);
+        const img = asteroidExplosionFrames[frameIndex];
+
+        if (img && img.complete) {
+            ctx.drawImage(img, exp.x, exp.y, 120, 120); // 운석 크기에 맞춘 폭발 크기
+        }
+
+        exp.frame += 0.2; // 애니메이션 속도 (기존 공 폭발과 동일)
+        if (exp.frame >= asteroidExplosionFrames.length) {
+            asteroidExplosions.splice(i, 1);
+        }
+    }
 }
