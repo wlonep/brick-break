@@ -23,12 +23,11 @@ const introStory = [
 
 const endingStory = [
     {
-        text: "제노스의 마지막 함대가 파괴되었습니다.<br>테라녹스는 다시 평화를 되찾았습니다.",
+        texts: [
+            "제노스의 마지막 함대가 파괴되었습니다.<br>테라녹스는 다시 평화를 되찾았습니다.",
+            "당신의 활약으로 은하계는 새로운 희망을 얻었습니다.<br>당신은 테라녹스의 영웅입니다."
+        ],
         media: { type: "image", src: "src/story/victory_scene.png" }
-    },
-    {
-        text: "당신의 활약으로 은하계는 새로운 희망을 얻었습니다.<br>당신은 테라녹스의 영웅입니다.",
-        media: { type: "video", src: "src/story/hero_ceremony.mp4", autoplay: true }
     },
     {
         text: "하지만 깊은 우주 어딘가..<br>새로운 위협이 꿈틀대고 있습니다.. 계속될 전설을 위해.",
@@ -82,7 +81,7 @@ function showStory(type, callback) {
         } else {
             displaySlide(storyData);
         }
-    }, 4000);
+    }, type === "ending" && currentSlide === 0 ? 8000 : 4000); // 첫 번째 엔딩 슬라이드는 8초, 나머지는 4초
 }
 
 function displaySlide(storyData) {
@@ -107,18 +106,52 @@ function displaySlide(storyData) {
 
     // 텍스트를 한 글자씩 출력 (타자기 효과)
     const $textElement = $("#story-content p");
-    const fullText = slide.text;
-    let currentCharIndex = 0;
 
-    $textElement.css("opacity", "1"); // 초기 투명도 제거
-    const typingInterval = setInterval(() => {
-        if (currentCharIndex < fullText.length) {
-            $textElement.html(fullText.substring(0, currentCharIndex + 1));
-            currentCharIndex++;
-        } else {
-            clearInterval(typingInterval);
-        }
-    }, 50); // 50ms 간격으로 한 글자씩 출력
+    if (slide.texts && currentSlide === 0 && storyType === "ending") {
+        // 첫 번째 엔딩 슬라이드: 두 텍스트 순차 표시
+        let textIndex = 0;
+        const displayText = () => {
+            const fullText = slide.texts[textIndex];
+            let currentCharIndex = 0;
+
+            $textElement.css("opacity", "0").html(""); // 초기화
+            $textElement.animate({ opacity: 1 }, 500); // 페이드 인
+
+            const typingInterval = setInterval(() => {
+                if (currentCharIndex < fullText.length) {
+                    $textElement.html(fullText.substring(0, currentCharIndex + 1));
+                    currentCharIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    if (textIndex === 0) {
+                        // 첫 번째 텍스트 완료 후 페이드 아웃 및 두 번째 텍스트 표시
+                        setTimeout(() => {
+                            $textElement.animate({ opacity: 0 }, 500, () => {
+                                textIndex++;
+                                displayText();
+                            });
+                        }, 1500); // 1.5초 대기 후 페이드 아웃
+                    }
+                }
+            }, 50);
+        };
+
+        displayText();
+    } else {
+        // 일반 슬라이드: 단일 텍스트 표시
+        const fullText = slide.text || slide.texts[0];
+        let currentCharIndex = 0;
+
+        $textElement.css("opacity", "1");
+        const typingInterval = setInterval(() => {
+            if (currentCharIndex < fullText.length) {
+                $textElement.html(fullText.substring(0, currentCharIndex + 1));
+                currentCharIndex++;
+            } else {
+                clearInterval(typingInterval);
+            }
+        }, 50);
+    }
 }
 
 window.showStory = showStory;
