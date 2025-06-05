@@ -1,0 +1,234 @@
+:root {
+    --bg-gradient: black;
+    --main-color: #d83434;
+    --main-hover: #238b45;
+    --text-color: white;
+    --title-color: #FFEB3B;
+}
+
+@font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'DungGeunMo', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'DungGeunMo', sans-serif;
+    font-size: 80px;
+    color: var(--title-color);
+    letter-spacing: 10px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 50px;
+    color: var(--title-color);
+}
+
+#container > section {
+    display: none;
+    position: fixed;
+    width: 100%;
+}
+
+#settings, #story {
+    left: 100%;
+    display: none;
+}
+
+#container > section:first-of-type {
+    display: block;
+}
+
+footer {
+    margin-top: 50px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.btn {
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    background-color: var(--main-color);
+    color: white;
+    font-family: 'DungGeunMo', sans-serif;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto 0;
+    gap: 10px;
+    transition: background-color 0.2s, opacity 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 5px black, 0 -5px black, 5px 0 black, -5px 0 black, 0 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0 5px #ffffff36;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+#credit {
+    margin-top: 50px;
+}
+
+#credit > p {
+    font-size: 20px;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+#credit > p > a {
+    transition: 0.2s;
+    color: lightblue;
+}
+
+#credit > p > a:hover {
+    opacity: 0.4;
+    transition: 0.2s;
+}
+
+#credit-back {
+    margin-top: 50px;
+}
+
+
+/* 스토리 섹션 스타일 */
+#story {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.95);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+#story-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#story-content {
+    width: 100%;
+    height: 100%;
+    position: relative; /* 텍스트 오버레이를 위해 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-color);
+}
+
+#story-content img, #story-content video {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0; /* 초기 투명 상태 */
+    transition: opacity 0.5s ease; /* 페이드 인/아웃 효과 */
+}
+
+#story-content img.fade-in, #story-content video.fade-in {
+    opacity: 1; /* 페이드 인 */
+}
+
+#story-content p {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.6;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+    max-width: 90%;
+    z-index: 2; /* 미디어 위에 표시 */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#story-skip {
+    position: fixed;
+    top: 40px; /* 우측 상단으로 이동 */
+    right: 40px;
+    font-size: 18px;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DungGeunMo', sans-serif;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    z-index: 3;
+    transition: 0.2s ease;
+}
+
+#story-skip:hover {
+    color: var(--main-hover);
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+.popup {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1002;
+    display: none; /* 기본적으로 숨김 */
+}

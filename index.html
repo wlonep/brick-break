@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <title>Space Pioneer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/settings.css">
+    <link rel="stylesheet" href="style/game.css">
     <script src="https://kit.fontawesome.com/e094af0263.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/console.js"></script>
@@ -19,21 +22,21 @@
 <div id="container">
     <section id="main-menu">
         <header>
-            <h1 class="title">Space Pioneer</h1>
+            <h1 class="title" id="menu-title">Space Pioneer</h1>
         </header>
         <div id="menu">
-            <button class="menu-btn" onclick="openGame()">게임시작</button>
-            <button class="menu-btn" onclick="openSettings()">환경설정</button>
-            <button class="menu-btn" onclick="openCredit()">크레딧</button>
-            <button class="menu-btn" onclick="clearProgress()">진행 초기화</button>
+            <button class="btn menu-btn" onclick="openGame()">GAME START</button>
+            <button class="btn menu-btn" onclick="openSettings()">SETTINGS</button>
+            <button class="btn menu-btn" onclick="openCredit()">CREDIT</button>
+            <button class="btn menu-btn hidden" onclick="clearProgress()">RESET</button>
         </div>
     </section>
     <section id="game">
         <div id="level_menu">
-            <h2>탐사할 행성을 선택하세요</h2>
+            <h2 id="level-title" class="fade-in-title">탐사할 행성을 선택하세요</h2>
             <div class="level-buttons">
                 <div class="planet-container">
-                    <div class="planet-number">1</div>
+                    <div class="planet-number">Earth</div>
                     <img class="level-btn" src="src/planet/level1.gif" alt="Level 1">
                 </div>
                 <div class="planet-container locked">
@@ -49,7 +52,9 @@
                     <img class="level-btn" src="src/planet/level4.gif" alt="Level 4">
                 </div>
             </div>
-            <button class="menu-btn level-back-btn" onclick="goMenu()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</button>
+            <button class="btn level-back-btn" onclick="goMenu()">
+                <i class="fa-solid fa-chevron-left"></i> 뒤로가기
+            </button>
         </div>
         <div id="stage_info">
             <div id="stage_info_content">
@@ -60,16 +65,15 @@
                         <span id="stage_difficulty"></span>
                     </div>
                     <div class="stage_info_item">
-                        <span class="info_label">설명</span>
-                        <span id="stage_description"></span>
-                    </div>
-                    <div class="stage_info_item">
                         <span class="info_label">최고 점수</span>
                         <span id="stage_score"></span>
                     </div>
+                    <div class="stage_info_item">
+                        <span id="stage_description"></span>
+                    </div>
                     <div id="stage_buttons">
-                        <button class="menu-btn stage-btn" id="back_to_select">뒤로가기</button>
-                        <button class="menu-btn stage-btn" id="start_stage">게임 시작</button>
+                        <button class="btn stage-btn" id="back_to_select">뒤로가기</button>
+                        <button class="btn stage-btn" id="start_stage">게임 시작</button>
                     </div>
                 </div>
             </div>
@@ -135,7 +139,7 @@
                     <img class="ship-btn" src="src/ship/ship_red.png" alt="ship">
                 </div>
             </div>
-            <button class="menu-btn" onclick="goMenu()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</button>
+            <button class="btn" onclick="goMenu()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</button>
         </div>
     </section>
     <section id="credit">
@@ -146,23 +150,31 @@
         <p>202211335 이명종</p>
         <p>202211311 송정우</p>
         <h3>BGM/SFX</h3>
-        <p>기본 - <a href="https://pixabay.com/music/video-games-spaceship-arcade-shooter-game-background-soundtrack-318508/" target="_blank">Spaceship</a></p>
-        <p>평화로운 - <a href="https://pixabay.com/music/ambient-a-night-full-of-stars-peaceful-electronic-8-bitpiano-track-321551/" target="_blank">A night full of stars</a></p>
-        <p>신나는 - <a href="https://pixabay.com/music/video-games-gaming-music-8-bit-console-play-background-intro-theme-278382/" target="_blank">Gaming Music</a></p>
-        <p>잔잔한 - <a href="https://pixabay.com/music/video-games-pixel-dreams-259187/" target="_blank">Pixel Dreams</a></p>
-        <p>레트로 - <a href="https://pixabay.com/music/synthwave-the-80s-nights-345192/" target="_blank">The 80s nights</a></p>
+        <p>기본 - <a
+                href="https://pixabay.com/music/video-games-spaceship-arcade-shooter-game-background-soundtrack-318508/"
+                target="_blank">Spaceship</a></p>
+        <p>평화로운 - <a
+                href="https://pixabay.com/music/ambient-a-night-full-of-stars-peaceful-electronic-8-bitpiano-track-321551/"
+                target="_blank">A night full of stars</a></p>
+        <p>신나는 - <a
+                href="https://pixabay.com/music/video-games-gaming-music-8-bit-console-play-background-intro-theme-278382/"
+                target="_blank">Gaming Music</a></p>
+        <p>잔잔한 - <a href="https://pixabay.com/music/video-games-pixel-dreams-259187/" target="_blank">Pixel Dreams</a>
+        </p>
+        <p>레트로 - <a href="https://pixabay.com/music/synthwave-the-80s-nights-345192/" target="_blank">The 80s nights</a>
+        </p>
         <p>SFX - <a href="https://www.mewpot.com" target="_blank">뮤팟</a></p>
         <h3>에셋</h3>
         <p>배경 - <a href="https://ansimuz.itch.io/space-background" target="_blank">Ansimuz</a></p>
         <p>우주선/공/VFX - <a href="https://ravenmore.itch.io/pixel-space-shooter-assets" target="_blank">Ravenmore</a></p>
         <p>행성/운석 - <a href="https://deep-fold.itch.io/pixel-planet-generator" target="_blank">Deep-Fold</a></p>
         <p>게임 배경 - <a href="https://deep-fold.itch.io/space-background-generator" target="_blank">Deep-Fold</a></p>
-        <button class="menu-btn" id="credit-back" onclick="goMenu()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</button>
+        <button class="btn" id="credit-back" onclick="goMenu()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</button>
     </section>
     <section id="story" style="display: none;">
         <div id="story-wrapper">
             <div id="story-content"></div>
-            <button id="story-skip" class="menu-btn">스킵 <i class="fa-solid fa-forward"></i></button>
+            <button id="story-skip">스킵 <i class="fa-solid fa-forward"></i></button>
         </div>
     </section>
 </div>

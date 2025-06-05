@@ -6,33 +6,15 @@ function changeShipColor() {
         shipBtn.each(function () {
             let imgSrc = $(this).attr("src");
             if (imgSrc.includes(saved_shipSrc)) {
-                $(this).css({
-                    //'border-color': 'white',
-                    'border': '1px solid white',
-                    'border-radius': '5px',
-                    'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
-                })
+                $(this).addClass("ship-selected")
             }
         })
     }
     shipBtn
-        .mouseenter(function () {
-            $(this).css({'cursor': 'pointer'})
-        })
-        .mouseleave(function () {
-            $(this).css({'cursor': 'default'})
-        })
-        .on("click", function () {
+        .off("click").on("click", function () {
             clickButton();
-            shipBtn.css({
-                'border': '1px solid transparent',
-                'box-shadow': '0 0 10px rgba(0, 0, 0, 0)'
-            })
-            $(this).css({
-                'border': '1px solid white',
-                'border-radius': '5px',
-                'box-shadow': '0 0 10px rgba(255, 255, 255, 0.5)'
-            })
+            shipBtn.removeClass("ship-selected");
+            $(this).addClass("ship-selected");
 
             let shipSrc = $(this).attr("src");
             localStorage.setItem("shipColor", shipSrc);
@@ -76,7 +58,7 @@ function changeBall(type) {
 }
 
 function openPopupSettings() {
-    const container = $(`
+    const container = $(`<div id="settings-wrapper">
             <div class="settings-content">
                 <label for="sound">배경 음악:</label>
                 <div class="select-wrapper">
@@ -103,8 +85,8 @@ function openPopupSettings() {
             </div><br/>`);
     const backBtn = $(`
             <div class="settings-content">
-                <div class="menu-btn" onclick="pauseGame()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</div>
-            </div>`);
+                <div class="btn" onclick="pauseGame()"><i class="fa-solid fa-chevron-left"></i> 뒤로가기</div>
+            </div></div>`);
     $("#status").html('<header><h2>환경설정</h2></header>').append(container, backBtn);
     $("#sound").val(localStorage.getItem("bgm"));
     changeVolume('volume');
