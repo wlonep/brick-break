@@ -9,12 +9,30 @@ window.onload = () => {
     changeBall(localStorage.getItem("ballType") || "blue");
     changeVolume("sfx-volume");
     changeShipColor();
+    init();
+    $("#menu-title").addClass("fade-in-title")
+    $(".menu-btn").each(function (i) {
+        setTimeout(() => {
+            $(this).addClass("btn-fade-in");
+        }, 1000 + i * 100);
+    });
 };
 
 window.onclick = (e) => {
     const target = e.target;
     if (target.tagName === "BUTTON" || target.tagName === "SELECT" || target.tagName === "INPUT") {
         clickButton();
+    }
+}
+
+function init() {
+    for (let i = 1; i <= 4; i++) {
+        const levelCleared = localStorage.getItem(`level-${i}-cleared`);
+        const levelScore = localStorage.getItem(`level-${i}-score`);
+        if (levelCleared || levelScore) {
+            $(`.hidden`).removeClass("hidden");
+            break;
+        }
     }
 }
 
@@ -47,11 +65,13 @@ function clickButton() {
 function goMenu() {
     $("section").not("#main-menu").animate({left: "30%", opacity: "0"}, 150, function () {
         $(this).hide();
+        $("#menu-title").removeClass("fade-in-title");
         $("#main-menu")
             .css({left: "-30%", display: "block", opacity: "0"})
             .animate({left: "0%", opacity: "1"}, 150, function () {
                 startBackgroundAnimation();
             });
+        init()
     });
 }
 
@@ -82,7 +102,6 @@ function openGame() {
     $(".planet-container").off("click").on("click", function () {
         clickButton();
         let level = $(this).index() + 1;
-        //startGame_Level(level);
         showStageInfo(level, $(this));
     });
 }
@@ -96,10 +115,10 @@ function showStageInfo(level, clickedObj) {
     let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
     let descriptions = [
-        "제노스에게 점령당한 지구입니다. 한때는 아름다운 행성이었죠.</br>지구를 되찾기 위한 첫 번째 임무를 시작하세요.",
-        "강력한 중력장을 가진 리겔 행성. 제노스의 전초기지로 사용되고 있습니다. 제노스군의 약화를 위한 두 번째 임무를 시작하세요.",
-        "거대한 가스 행성 J1407B. 제노스의 주요 요새가 구축되어 있는 위험한 지역입니다. 제노스의 요새를 격파하고 침공을 끝마쳐주세요.",
-        "블랙홀 포웨히 근처의 제노스 최종 본거지. 시공간이 왜곡된 이곳에서 최후의 전투가 시작됩니다.</br>명심하세요, 블랙홀 안에서 벗어날 방법은 없습니다."
+        "제노스에게 점령당한 지구입니다.<br/>한때는 인간들이 살던 아름다운 행성이었죠.</br>지구를 되찾기 위한 첫 번째 임무를 시작하세요.",
+        "강력한 빛을 내뿜는 청색초거성. 제노스의 전초기지로 사용되고 있습니다. 제노스의 약화를 위한 두 번째 임무를 시작하세요.",
+        "어마어마한 고리를 가진 가스 행성.<br/>제노스의 주요 요새가 구축되어 있어 반드시 격파해야 하지만 <br/>행성 주위를 도는 무수한 잔해들이 우주선을 위협하고 있습니다.<br/>제노스의 요새를 격파하고 임무를 완료하세요.",
+        "'영원한 창조물의 장식된 어둠의 원천'이라는 뜻을 가진 거대한 블랙홀이자 제노스의 최종 본거지.<br/>시공간이 왜곡된 이곳에서 최후의 전투가 시작됩니다.</br>명심하세요, 블랙홀 안에서 벗어날 방법은 없습니다."
     ];
 
     // 원본 행성의 현재 위치 정보 가져오기
@@ -135,7 +154,7 @@ function showStageInfo(level, clickedObj) {
                 "height": originalRect.height + "px"
             });
 
-        $("body").append(CloneImg); //body에 append한건 정말 어쩔수가 없었습니다..
+        $("body").append(CloneImg);
         CloneImg
             .animate({
                 "left": targetLeft + "px",
@@ -179,13 +198,24 @@ function resetPlanetSelection() {
 }
 
 function openGameMenu() {
+    const levelNames = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     $(".planet-container").each(function () {
         const level = $(this).index();
         const levelBool = localStorage.getItem(`level-${level}-cleared`)
         if (levelBool) {
-            $(this).removeClass("locked").find(".planet-number").text(level + 1);
+            $(this).removeClass("locked").find(".planet-number").text(levelNames[level]);
         }
-    })
+
+        setTimeout(() => {
+            $(this).addClass("zoom-in")
+        }, 1000 + level * 500)
+    });
+
+    setTimeout(() => {
+        $(".level-back-btn").addClass("fade-in-title");
+        $("#level-title").removeClass("fade-in-title");
+    }, 2200);
+
     $("#game")
         .css({left: "20%", display: "block", opacity: "0"})
         .animate({left: "0", opacity: "1"}, 150, function () {
@@ -205,11 +235,11 @@ function startGame_Level(level) {
 
 function planetHoverEvent() {
     let levels = ['EASY', 'NORMAL', "HARD", "INFINITY"];
-    let level_name = ['Earth', 'Rigel', 'J1407B', 'Powehi'];
     let levelColors = ['#4CAF50', '#FFEB3B', '#FF5252', '#ef6dc3'];
 
-    $(".planet-container").not(".locked").off('mouseenter mouseleave')
+    $(".planet-container").off('mouseenter mouseleave')
         .mouseenter(function () {
+            $(this).addClass("planet-selected")
             let levelIndex = $(this).index();
             let levelText = $(this).find(".planet-number");
             let levelImg = $(this).find(".level-btn")
@@ -226,9 +256,8 @@ function planetHoverEvent() {
                 descript_Div
                     .addClass("level-class")
                     .css("pointer-events", "none")
-                    .html(`Highest Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<br/>
-                    Planet: <strong> ${level_name[levelIndex]}</strong><br/>
-                    Difficulty: <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}<strong/>`)
+                    .html(`<div>[ <strong style="color: ${levelColors[levelIndex]}">${levels[levelIndex]}</strong> ]</div>
+                    <div style="color: white">Score: ${localStorage.getItem(`level-${levelIndex + 1}-score`) || 0}<div>`)
                     .appendTo($(this));
             }
 
@@ -242,16 +271,15 @@ function planetHoverEvent() {
                 'transform': 'scale(1.0) translateY(5px)'
             })
             $(this).find(".level-class").remove();
-    })
+        })
 }
 
 function clearProgress() {
-    // localStorage의 클리어 상태와 점수 초기화
     for (let i = 1; i <= 4; i++) {
         localStorage.removeItem(`level-${i}-cleared`);
         localStorage.removeItem(`level-${i}-score`);
     }
 
     $("<div class='popup'>진행 상태가 초기화되었습니다!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300);
-    setInterval(() => window.location.reload(), 1000);
+    setTimeout(() => location.reload(), 700)
 }

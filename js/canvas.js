@@ -48,34 +48,47 @@ function initCanvas() {
 function drawBackground() {
     const h1 = bgImg1.height;
     const h2 = bgImg2.height;
+    const totalHeight = h1 + h2;
 
     if (!bgImg1.complete || !bgImg2.complete) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (scrollY < h1) {
-        ctx.drawImage(bgImg1, 0, scrollY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-        if (scrollY + canvas.height > h1) {
-            const remaining = scrollY + canvas.height - h1;
-            ctx.drawImage(bgImg2, 0, 0, canvas.width, remaining, 0, canvas.height - remaining, canvas.width, remaining);
-        }
-    } else {
-        const offsetY = scrollY - h1;
-        ctx.drawImage(bgImg2, 0, offsetY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+    let localScrollY = level === 4 ? scrollY % totalHeight : scrollY;
+    let drawY = 0;
+    let scrollOffset = localScrollY;
+
+    while (drawY < canvas.height) {
+        const img = scrollOffset < h1 ? bgImg1 : bgImg2;
+        const imgHeight = (img === bgImg1) ? h1 : h2;
+        const offsetY = scrollOffset % imgHeight;
+        const drawHeight = Math.min(canvas.height - drawY, imgHeight - offsetY);
+
+        ctx.drawImage(
+            img,
+            0, offsetY, canvas.width, drawHeight,
+            0, drawY, canvas.width, drawHeight
+        );
+
+        scrollOffset += drawHeight;
+        drawY += drawHeight;
     }
 
     if (stopScroll || !isPlaying) return;
     scrollY += 0.5;
     if (isCheat) scrollY += 15;
 
-    const totalHeight = h1 + h2 - canvas.height;
-    if (scrollY >= totalHeight) {
-        stopScroll = true;
-        if (isCheat) {
-            setInterval(() => {
-                resetEntities();
-                enemyShipAlive = false;
-            }, 500)
+    if (level !== 4) {
+        const maxScroll = h1 + h2 - canvas.height;
+        if (scrollY >= maxScroll) {
+            stopScroll = true;
+
+            if (isCheat) {
+                setInterval(() => {
+                    resetEntities();
+                    enemyShipAlive = false;
+                }, 500);
+            }
         }
     }
 }
@@ -250,7 +263,7 @@ function victory() {
         if (!isLevel4) {
             const yesText = level === 3 ? "무한 모드로" : "다음 단계로";
             btnArea.append(
-                $(`<button class='menu-btn'>${yesText}</button>`).off("click").on("click", function () {
+                $(`<button class='btn'>${yesText}</button>`).off("click").on("click", function () {
                     // #status를 원래 위치로 복원 및 내용 제거
                     $status.appendTo("#game-wrapper").html("").hide();
                     const nextLevel = level === 3 ? 4 : level + 1;
@@ -260,7 +273,7 @@ function victory() {
         }
 
         btnArea.append(
-            $("<button class='menu-btn'>단계 선택</button>").off("click").on("click", function () {
+            $("<button class='btn'>단계 선택</button>").off("click").on("click", function () {
                 // #status를 원래 위치로 복원 및 내용 제거
                 $status.appendTo("#game-wrapper").html("").hide();
                 openGameMenu();
