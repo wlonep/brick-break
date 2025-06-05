@@ -11,7 +11,7 @@ let asteroidSpawnTimer = -1;  // START 후 1초 지연
 let lastEnemyHitTime = 0;
 const enemyHitCooldown = 0.5;
 
-const shrinkRatio = 0.8; //히트박스 크기 조정 (0.8 : 이미지의 80%만큼만을 히트박스로)
+const shrinkRatio = 0.9; //히트박스 크기 조정 (0.8 : 이미지의 80%만큼만을 히트박스로)
 
 const fall_point = [0, 50, 100, 150, 200, 250, 300, 350, 400];
 const asteroidWidth = 100;
@@ -36,7 +36,7 @@ const enemyLaserSpeed = 250; // 레이저 속도 조절(공이 지금 400임)
 let enemyLaserTimer = 0;
 const enemyLaserImg = new Image();
 enemyLaserImg.src = "src/ball/enemyship_bullet.png";
-const laserAngles = [-30, -15, 0, 15, 30].map(deg => deg * Math.PI / 180); // 0°, -15°, +15°, -30°, +30°
+const laserAngles = [-45, -15, 15, 45].map(deg => deg * Math.PI / 180); // -45°, -15°, 15°, 45°
 
 
 const asteroidImages = [];
@@ -227,7 +227,6 @@ function isBallHitEnemyShip(ball) {
     if (!hit) return false;
     spawnExplosion(ball.x + ballSize / 2, ball.y + ballSize / 2);
 
-    // ✅ 항상 반사 먼저 처리
     const dir = getCollisionDirection(ball, {x: ex, y: ey, width: hitW, height: hitH});
     if (dir === "left" || dir === "right") ball.vx *= -1;
     else ball.vy *= -1;

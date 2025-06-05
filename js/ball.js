@@ -3,6 +3,9 @@ const ballImg = new Image();
 let ballType = localStorage.getItem("ballType") || "blue";
 ballImg.src = `src/ball/${ballType}.png`;
 
+let lastFireTime = 0;
+const FIRE_COOLDOWN = 100;
+
 const ballSize = 16;
 
 let balls = []; // 배열로 변경
@@ -65,7 +68,10 @@ function drawExplosions() {
 }
 
 function fireBall() {
+    const now = performance.now();
+    if (now - lastFireTime < FIRE_COOLDOWN) return;   // 너무 빠르면 무시
     if (balls.length >= maxBalls) return;
+
     const centerX = shipX + shipWidth / 2;
     const centerY = shipY;
 
@@ -77,6 +83,7 @@ function fireBall() {
         prevX: centerX - ballSize / 2,
         prevY: centerY - ballSize / 2
     });
+    lastFireTime = now;       // 시간 갱신
 }
 
 function reflexPlay() {
