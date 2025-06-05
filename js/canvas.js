@@ -126,7 +126,7 @@ function eventHandler() {
         bar.x = newBarX;
         shipX = bar.x + (bar.width - shipWidth) / 2;
     });
-    $(canvas).on('mousedown', function (e) {
+    $(canvas).on('click', function (e) {
         e.preventDefault();
         if (isPlaying) {
             fireBall();
