@@ -36,7 +36,7 @@ const enemyLaserSpeed = 250; // 레이저 속도 조절(공이 지금 400임)
 let enemyLaserTimer = 0;
 const enemyLaserImg = new Image();
 enemyLaserImg.src = "src/ball/enemyship_bullet.png";
-const laserAngles = [-30, 0, 30].map(deg => deg * Math.PI / 180); // 0°, -30°, +30°
+const laserAngles = [-45, -15, 15, 45].map(deg => deg * Math.PI / 180); // -45°, -15°, 15°, 45°
 
 
 const asteroidImages = [];
