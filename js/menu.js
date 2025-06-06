@@ -279,7 +279,7 @@ function clearProgress() {
         localStorage.removeItem(`level-${i}-cleared`);
         localStorage.removeItem(`level-${i}-score`);
     }
-
+    localStorage.removeItem("hasSeenIntroStory");
     $("<div class='popup'>진행 상태가 초기화되었습니다!</div>").appendTo("body").fadeIn(300).delay(500).fadeOut(300);
     setTimeout(() => location.reload(), 700)
 }
