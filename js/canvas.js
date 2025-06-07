@@ -264,7 +264,7 @@ function victory() {
             const yesText = level === 3 ? "무한 모드로" : "다음 단계로";
             btnArea.append(
                 $(`<button class='btn'>${yesText}</button>`).off("click").on("click", function () {
-                    // #status를 원래 위치로 복원 및 내용 제거
+                    clearInterval(timer); // 카운트다운 중지
                     $status.appendTo("#game-wrapper").html("").hide();
                     const nextLevel = level === 3 ? 4 : level + 1;
                     init_GameLevel(nextLevel);
@@ -274,12 +274,13 @@ function victory() {
 
         btnArea.append(
             $("<button class='btn'>단계 선택</button>").off("click").on("click", function () {
-                // #status를 원래 위치로 복원 및 내용 제거
+                clearInterval(timer); // 카운트다운 중지
                 $status.appendTo("#game-wrapper").html("").hide();
                 openGameMenu();
             })
         );
 
+        let countdown = 10; // 10초 카운트다운
         setTimeout(() => {
             $status
                 .removeAttr("style") // 모든 인라인 스타일 제거
@@ -289,7 +290,24 @@ function victory() {
                 .css("display", "flex")
                 .append(`<div class='status-small'>점수: ${finalScore}</div>`)
                 .append(`<div class='status-small'>최고 점수: ${localStorage.getItem(`level-${level}-score`) || 0}</div>`)
-                .append(btnArea);
+                .append(btnArea)
+                .append(`<div class='status-small'>${countdown}</div>`);
+
+            // 카운트다운 타이머 시작
+            const timer = setInterval(() => {
+                countdown--;
+                $(".status-small").last().text(countdown);
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    $status.appendTo("#game-wrapper").html("").hide();
+                    if (level === 3) {
+                        openGameMenu(); // 레벨 3에서는 메뉴로 이동
+                    } else {
+                        const nextLevel = level + 1; // 레벨 1, 2에서는 다음 레벨로
+                        init_GameLevel(nextLevel);
+                    }
+                }
+            }, 1000);
         }, 500);
     }
 
