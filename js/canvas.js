@@ -259,12 +259,14 @@ function victory() {
     function showScoreboard() {
         const btnArea = $("<div id='status-btn-wrapper'/>");
         const isLevel4 = level === 4;
+        let timer = null; // timer 선언
+        let countdown = 10; // 10초로 설정
 
         if (!isLevel4) {
             const yesText = level === 3 ? "무한 모드로" : "다음 단계로";
             btnArea.append(
                 $(`<button class='btn'>${yesText}</button>`).off("click").on("click", function () {
-                    clearInterval(timer); // 카운트다운 중지
+                    if (timer) clearInterval(timer);
                     $status.appendTo("#game-wrapper").html("").hide();
                     const nextLevel = level === 3 ? 4 : level + 1;
                     init_GameLevel(nextLevel);
@@ -274,41 +276,48 @@ function victory() {
 
         btnArea.append(
             $("<button class='btn'>단계 선택</button>").off("click").on("click", function () {
-                clearInterval(timer); // 카운트다운 중지
+                if (timer) clearInterval(timer);
                 $status.appendTo("#game-wrapper").html("").hide();
-                openGameMenu();
+                if (typeof openGameMenu === "function") {
+                    openGameMenu();
+                } else {
+                    goMenu();
+                }
             })
         );
 
-        let countdown = 10; // 10초 카운트다운
         setTimeout(() => {
             $status
                 .removeAttr("style") // 모든 인라인 스타일 제거
                 .removeClass() // 기존 클래스 제거
-                .addClass("scoreboard") // 칠판 스타일 클래스 적용
+                .addClass("scoreboard") // 칠판 스타일 적용
                 .html(`<h1 class='title'>레벨 ${level} 클리어!</h1>`)
                 .css("display", "flex")
                 .append(`<div class='status-small'>점수: ${finalScore}</div>`)
                 .append(`<div class='status-small'>최고 점수: ${localStorage.getItem(`level-${level}-score`) || 0}</div>`)
                 .append(btnArea)
-                .append(`<div class='status-small'>${countdown}</div>`);
+                .append(`<div class='status-small'>자동 전환까지 ${countdown}초</div>`);
 
             // 카운트다운 타이머 시작
-            const timer = setInterval(() => {
+            timer = setInterval(() => {
                 countdown--;
-                $(".status-small").last().text(countdown);
+                $(".status-small").last().text(`자동 전환까지 ${countdown}초`);
                 if (countdown < 0) {
                     clearInterval(timer);
                     $status.appendTo("#game-wrapper").html("").hide();
                     if (level === 3) {
-                        openGameMenu(); // 레벨 3에서는 메뉴로 이동
+                        if (typeof openGameMenu === "function") {
+                            openGameMenu();
+                        } else {
+                            goMenu();
+                        }
                     } else {
-                        const nextLevel = level + 1; // 레벨 1, 2에서는 다음 레벨로
+                        const nextLevel = level + 1;
                         init_GameLevel(nextLevel);
                     }
                 }
             }, 1000);
-        }, 500);
+        }, 1000); // 스토리 후 1초 지연
     }
 
     // 모든 레벨 클리어 시 엔딩 스토리 표시 후 점수판 표시
