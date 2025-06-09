@@ -75,8 +75,8 @@ function drawBackground() {
     }
 
     if (stopScroll || !isPlaying) return;
-    scrollY += 0.5;
-    if (isCheat) scrollY += 15;
+    scrollY += 2;
+    if (isCheat) scrollY += 20;
 
     if (level !== 4) {
         const maxScroll = h1 + h2 - canvas.height;
