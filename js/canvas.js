@@ -471,7 +471,7 @@ function init_GameLevel(lv) {
     enemyShipY = canvas.height * 0.1;
     enemyShipX = canvas.width / 2 - enemyShipWidth / 2;
 
-    enemyShipHP = (level === 1) ? 3 : (level === 2) ? 5 : (level === 3) ? 7 : Infinity;
+    enemyShipHP = (level === 1) ? 1 : (level === 2) ? 5 : (level === 3) ? 7 : Infinity;
     enemyShipAlive = true;
 
     startGame();
