@@ -420,7 +420,7 @@ function drawEnemyHPBar() {
         return;
     }
 
-    const totalHP = level === 1 ? 3 : level === 1 ? 5 : 7;
+    const totalHP = level === 1 ? 1 : level === 2 ? 5 : 7;
     const segmentWidth = barWidth / totalHP;
 
     for (let i = 0; i < enemyShipHP; i++) {
